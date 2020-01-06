@@ -89,7 +89,7 @@ PyMODINIT_FUNC PyInit__carbon(void)
 /**
  * Initialize the entire runtime.
  */
-MxAPI_FUNC(int) Mx_Initialize(int) {
+CAPI_FUNC(int) Mx_Initialize(int) {
     if(!Py_IsInitialized()) {
         Py_Initialize();
     }

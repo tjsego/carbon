@@ -13,9 +13,21 @@ static_assert(sizeof(CType) == sizeof(PyTypeObject), "CType must be same as PyTy
 static_assert(offsetof(CType, tp_finalize) == offsetof(PyTypeObject, tp_finalize), "CType offset different");
 
 
-//static CType typeType{"CType", CObject_Type};
+static CType typeType = {
+    {0, NULL},
+    .tp_name = "carbon.Type",
+    .tp_doc = "Custom objects",
+    .tp_basicsize = sizeof(CType),
+    .tp_itemsize = 0,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_new = PyType_GenericNew
+};
 
-//CType *CType_Type = &typeType;
+
+
+CAPI_DATA (CType) *CType_Type = &typeType;
+
+
 
 void CType_init(PyObject *m) {
 
@@ -37,7 +49,7 @@ void CType_init(PyObject *m) {
  
  */
 
-MxAPI_FUNC(int) CType_IsSubtype(CType *a, CType *b) {
+CAPI_FUNC(int) CType_IsSubtype(CType *a, CType *b) {
     do {
         if (a == b)
             return 1;

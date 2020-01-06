@@ -8,8 +8,8 @@
 #ifndef PYCALC_INCLUDE_CA_TYPE_H_
 #define PYCALC_INCLUDE_CA_TYPE_H_
 
-#include "mx_port.h"
-#include "mx_object.h"
+#include "c_port.h"
+#include "c_object.h"
 
 
 #ifdef __cplusplus
@@ -47,7 +47,7 @@ MxAPI_STRUCT(CType);
 
 struct CObject;
 
-MxAPI_FUNC(int) FooTest();
+CAPI_FUNC(int) FooTest();
 
 
 
@@ -55,33 +55,33 @@ MxAPI_FUNC(int) FooTest();
  * Return true if the object o is a type object, including instances of types
  * derived from the standard type object. Return false in all other cases.
  */
-MxAPI_FUNC(int) CType_Check(CObject *o);
+CAPI_FUNC(int) CType_Check(CObject *o);
 
 /**
  Return true if the object o is a type object, but not a subtype
  of the standard type object. Return false in all other cases.
  */
-MxAPI_FUNC(int) CType_CheckExact(CObject *o);
+CAPI_FUNC(int) CType_CheckExact(CObject *o);
 
 /**
  Clear the internal lookup cache. Return the current version tag.
  */
-MxAPI_FUNC(unsigned int) CType_ClearCache();
+CAPI_FUNC(unsigned int) CType_ClearCache();
 
 /**
  Invalidate the internal lookup cache for the type and all of its subtypes.
  This function must be called after any manual modification of the attributes or base classes of the type.
  */
-MxAPI_FUNC(void) CType_Modified(CType *type);
+CAPI_FUNC(void) CType_Modified(CType *type);
 
 
-//MxAPI_FUNC(void) CType_HasFeature(CObject *foo);
+//CAPI_FUNC(void) CType_HasFeature(CObject *foo);
 
 /**
  * Return true if the type object o sets the feature feature.
  * Type features are denoted by single bit flags.
  */
-//MxAPI_FUNC(int) CType_HasFeature(CObject *o, int feature);
+//CAPI_FUNC(int) CType_HasFeature(CObject *o, int feature);
 
 /**
  * Return true if a is a subtype of b.
@@ -90,17 +90,17 @@ MxAPI_FUNC(void) CType_Modified(CType *type);
  * __subclasscheck__() is not called on b. Mxll CObject_IsSubclass()
  * to do the same check that issubclass() would do.
  */
-MxAPI_FUNC(int) CType_IsSubtype(CType *a, CType *b);
+CAPI_FUNC(int) CType_IsSubtype(CType *a, CType *b);
 
 /**
  * Return value: New reference.
  */
-MxAPI_FUNC(CObject*) CType_GenericAlloc(CType *type, size_t nitems);
+CAPI_FUNC(CObject*) CType_GenericAlloc(CType *type, size_t nitems);
 
 /**
  * Return value: New reference.
  */
-MxAPI_FUNC(CObject*) CType_GenericNew(CType *type, CObject *args,
+CAPI_FUNC(CObject*) CType_GenericNew(CType *type, CObject *args,
 		CObject *kwds);
 
 

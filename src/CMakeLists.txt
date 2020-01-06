@@ -185,15 +185,32 @@ add_library(carbon_shared SHARED
 set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME carbon)
 
 target_include_directories(carbon_shared PUBLIC
+  ${PROJECT_BINARY_DIR}/include
+  ${PROJECT_SOURCE_DIR}/include
+)
+
+
+
+
+add_library(carbon_static STATIC
+  $<TARGET_OBJECTS:carbon_obj>
+  carbon.cpp
+  )
+
+set_target_properties(carbon_static PROPERTIES OUTPUT_NAME carbon)
+
+target_include_directories(carbon_static PUBLIC
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   #${PYTHON_INCLUDE_DIRS}
   #${NUMPY_INCLUDE_DIR}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-)
+  )
 
-
+target_link_libraries(carbon_static
+  Python::Python
+  )
 
 # shared and static libraries built from the same object files
 add_library(carbon_py SHARED
@@ -252,31 +269,5 @@ target_link_libraries(carbon_shared
   )
 
 
-
-#add_library(carbon_static STATIC
-#  $<TARGET_OBJECTS:carbon_obj> carbon.cpp)
-
-#set_target_properties(carbon_static PROPERTIES OUTPUT_NAME carbon)
-
-#target_link_libraries(carbon_static
-#  Python::Python
-#  glfw
-#  Assimp::Assimp
-#  Magnum::Application
-#  Magnum::Magnum
-#  Magnum::Shaders
-#  voro++
-#  sundials_cvode_static
-#  ${OPENGL_LIBRARIES}
-#  )
-
-#if(C_APPLE)
-#  target_link_libraries(carbon_static MagnumWindowlessCglApplication)
-#elseif(C_LINUX)
-#  target_link_libraries(carbon_static MagnumWindowlessEglApplication)
-#elseif(C_WINDOWS)
-#  target_link_libraries(carbon_static MagnumWindowlessWglApplication)
-#endif()
-
-
 add_library(carbon ALIAS carbon_shared)
+add_library(Carbon::Carbon ALIAS carbon_shared)

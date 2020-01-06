@@ -65,12 +65,12 @@ CObject * CObject_CallMethodObjArgs(CObject* o, CObject* method, ...)
 }
 
 
-MxAPI_FUNC(uint32_t) Ca_IncRef(CObject* o)
+CAPI_FUNC(uint32_t) Ca_IncRef(CObject* o)
 {
 	return 0;
 }
 
-MxAPI_FUNC(uint32_t) Ca_DecRef(CObject* o)
+CAPI_FUNC(uint32_t) Ca_DecRef(CObject* o)
 {
 	return 0;
 }

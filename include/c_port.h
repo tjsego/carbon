@@ -34,8 +34,8 @@ typedef size_t         Mx_ssize_t;
 
 /* Declarations for symbol visibility.
 
-  MxAPI_FUNC(type): Declares a public Mechanica API function and return type
-  MxAPI_DATA(type): Declares public Mechanica data and its type
+  CAPI_FUNC(type): Declares a public Mechanica API function and return type
+  CAPI_DATA(type): Declares public Mechanica data and its type
   MxMODINIT_FUNC:   A Mechanica module init function.  If these functions are
                     inside the Mechanica core, they are private to the core.
                     If in an extension module, it may be declared with
@@ -59,8 +59,8 @@ typedef size_t         Mx_ssize_t;
 #if defined(Mx_ENABLE_SHARED) || defined(__CYGWIN__)
 #       if defined(HAVE_DECLSPEC_DLL)
 #               ifdef Mx_BUILD_CORE
-#                       define MxAPI_FUNC(RTYPE) __declspec(dllexport) RTYPE
-#                       define MxAPI_DATA(RTYPE) extern __declspec(dllexport) RTYPE
+#                       define CAPI_FUNC(RTYPE) __declspec(dllexport) RTYPE
+#                       define CAPI_DATA(RTYPE) extern __declspec(dllexport) RTYPE
         /* module init functions inside the core need no external linkage */
         /* except for Cygwin to handle embedding */
 #                       if defined(__CYGWIN__)
@@ -75,9 +75,9 @@ typedef size_t         Mx_ssize_t;
         /* failures similar to those described at the bottom of 4.1: */
         /* http://docs.python.org/extending/windows.html#a-cookbook-approach */
 #                       if !defined(__CYGWIN__)
-#                               define MxAPI_FUNC(RTYPE) __declspec(dllimport) RTYPE
+#                               define CAPI_FUNC(RTYPE) __declspec(dllimport) RTYPE
 #                       endif /* !__CYGWIN__ */
-#                       define MxAPI_DATA(RTYPE) extern __declspec(dllimport) RTYPE
+#                       define CAPI_DATA(RTYPE) extern __declspec(dllimport) RTYPE
         /* module init functions outside the core must be exported */
 #                       if defined(__cplusplus)
 #                               define MxMODINIT_FUNC extern "C" __declspec(dllexport) CObject*
@@ -89,17 +89,22 @@ typedef size_t         Mx_ssize_t;
 #endif /* Mx_ENABLE_SHARED */
 
 /* If no external linkage macros defined by now, create defaults */
-#ifndef MxAPI_FUNC
+#ifndef CAPI_FUNC
 #  ifdef __cplusplus
-#    define MxAPI_FUNC(RTYPE) extern "C" RTYPE
+#    define CAPI_FUNC(RTYPE) extern "C" RTYPE
 #  else
-#    define MxAPI_FUNC(RTYPE) extern RTYPE
+#    define CAPI_FUNC(RTYPE) extern RTYPE
 #  endif
 #endif
 
-#ifndef MxAPI_DATA
-#       define MxAPI_DATA(RTYPE) extern RTYPE
+#ifndef CAPI_DATA
+//#  ifdef __cplusplus
+//#    define CAPI_DATA(RTYPE) extern "C" RTYPE
+//#  else
+#    define CAPI_DATA(RTYPE) extern RTYPE
+//#  endif
 #endif
+
 #ifndef MxMODINIT_FUNC
 #       if defined(__cplusplus)
 #               define MxMODINIT_FUNC extern "C" CObject*

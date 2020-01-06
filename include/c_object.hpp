@@ -157,7 +157,7 @@ HRESULT CObject_ChangeType(CObject *obj, const CType *type);
 //#endif
 //} PyTypeObject;
 
-MxAPI_DATA(struct CType*) CType_Type;
+CAPI_DATA(struct CType*) CType_Type;
 
 struct CType : CObject {
 
@@ -430,71 +430,71 @@ method blocks.
 
 
 /* Generic type check */
-MxAPI_FUNC(int) CType_IsSubtype(CType *, CType *);
+CAPI_FUNC(int) CType_IsSubtype(CType *, CType *);
 #define CObject_TypeCheck(ob, tp) \
         (Mx_TYPE(ob) == (tp) || CType_IsSubtype(Mx_TYPE(ob), (tp)))
 
 
-//MxAPI_DATA(CType) CType_Type; /* built-in 'type' */
+//CAPI_DATA(CType) CType_Type; /* built-in 'type' */
 
-MxAPI_DATA(CType) MxBaseObject_Type; /* built-in 'object' */
-MxAPI_DATA(CType) MxSuper_Type; /* built-in 'super' */
+CAPI_DATA(CType) MxBaseObject_Type; /* built-in 'object' */
+CAPI_DATA(CType) MxSuper_Type; /* built-in 'super' */
 
 //#define CType_Check(op) \
 //        CType_FastSubclass(Mx_TYPE(op), Mx_TPFLAGS_TYPE_SUBCLASS)
 //#define CType_CheckExact(op) (Mx_TYPE(op) == &PyType_Type)
 
-MxAPI_FUNC(int) CType_Ready(CType *);
-MxAPI_FUNC(CObject *) CType_GenericAlloc(CType *, Mx_ssize_t);
-MxAPI_FUNC(CObject *) CType_GenericNew(CType *,
+CAPI_FUNC(int) CType_Ready(CType *);
+CAPI_FUNC(CObject *) CType_GenericAlloc(CType *, Mx_ssize_t);
+CAPI_FUNC(CObject *) CType_GenericNew(CType *,
         CObject *, CObject *);
-MxAPI_FUNC(CObject *) _CType_Lookup(CType *, CObject *);
-MxAPI_FUNC(CObject *) _CObject_LookupSpecial(CObject *, char *, CObject **);
-MxAPI_FUNC(unsigned int) CType_ClearCache(void);
-MxAPI_FUNC(void) CType_Modified(CType *);
+CAPI_FUNC(CObject *) _CType_Lookup(CType *, CObject *);
+CAPI_FUNC(CObject *) _CObject_LookupSpecial(CObject *, char *, CObject **);
+CAPI_FUNC(unsigned int) CType_ClearCache(void);
+CAPI_FUNC(void) CType_Modified(CType *);
 
 /* Generic operations on objects */
-MxAPI_FUNC(int) CObject_Print(CObject *, FILE *, int);
-MxAPI_FUNC(void) _CObject_Dump(CObject *);
-MxAPI_FUNC(CObject *) CObject_Repr(CObject *);
-MxAPI_FUNC(CObject *) _CObject_Str(CObject *);
-MxAPI_FUNC(CObject *) CObject_Str(CObject *);
+CAPI_FUNC(int) CObject_Print(CObject *, FILE *, int);
+CAPI_FUNC(void) _CObject_Dump(CObject *);
+CAPI_FUNC(CObject *) CObject_Repr(CObject *);
+CAPI_FUNC(CObject *) _CObject_Str(CObject *);
+CAPI_FUNC(CObject *) CObject_Str(CObject *);
 #define CObject_Bytes CObject_Str
 #ifdef Mx_USING_UNICODE
-MxAPI_FUNC(CObject *) CObject_Unicode(CObject *);
+CAPI_FUNC(CObject *) CObject_Unicode(CObject *);
 #endif
-MxAPI_FUNC(int) CObject_Compare(CObject *, CObject *);
-MxAPI_FUNC(CObject *) CObject_RichCompare(CObject *, CObject *, int);
-MxAPI_FUNC(int) CObject_RichCompareBool(CObject *, CObject *, int);
-MxAPI_FUNC(CObject *) CObject_GetAttrString(CObject *, const char *);
-MxAPI_FUNC(int) CObject_SetAttrString(CObject *, const char *, CObject *);
-MxAPI_FUNC(int) CObject_HasAttrString(CObject *, const char *);
-MxAPI_FUNC(CObject *) CObject_GetAttr(CObject *, CObject *);
-MxAPI_FUNC(int) CObject_SetAttr(CObject *, CObject *, CObject *);
-MxAPI_FUNC(int) CObject_HasAttr(CObject *, CObject *);
-MxAPI_FUNC(CObject **) _CObject_GetDictPtr(CObject *);
-MxAPI_FUNC(CObject *) CObject_SelfIter(CObject *);
-MxAPI_FUNC(CObject *) _CObject_NextNotImplemented(CObject *);
-MxAPI_FUNC(CObject *) CObject_GenericGetAttr(CObject *, CObject *);
-MxAPI_FUNC(int) CObject_GenericSetAttr(CObject *,
+CAPI_FUNC(int) CObject_Compare(CObject *, CObject *);
+CAPI_FUNC(CObject *) CObject_RichCompare(CObject *, CObject *, int);
+CAPI_FUNC(int) CObject_RichCompareBool(CObject *, CObject *, int);
+CAPI_FUNC(CObject *) CObject_GetAttrString(CObject *, const char *);
+CAPI_FUNC(int) CObject_SetAttrString(CObject *, const char *, CObject *);
+CAPI_FUNC(int) CObject_HasAttrString(CObject *, const char *);
+CAPI_FUNC(CObject *) CObject_GetAttr(CObject *, CObject *);
+CAPI_FUNC(int) CObject_SetAttr(CObject *, CObject *, CObject *);
+CAPI_FUNC(int) CObject_HasAttr(CObject *, CObject *);
+CAPI_FUNC(CObject **) _CObject_GetDictPtr(CObject *);
+CAPI_FUNC(CObject *) CObject_SelfIter(CObject *);
+CAPI_FUNC(CObject *) _CObject_NextNotImplemented(CObject *);
+CAPI_FUNC(CObject *) CObject_GenericGetAttr(CObject *, CObject *);
+CAPI_FUNC(int) CObject_GenericSetAttr(CObject *,
         CObject *, CObject *);
-MxAPI_FUNC(long) CObject_Hash(CObject *);
-MxAPI_FUNC(long) CObject_HashNotImplemented(CObject *);
-MxAPI_FUNC(int) CObject_IsTrue(CObject *);
-MxAPI_FUNC(int) CObject_Not(CObject *);
-MxAPI_FUNC(int) MxCallable_Check(CObject *);
-MxAPI_FUNC(int) MxNumber_Coerce(CObject **, CObject **);
-MxAPI_FUNC(int) MxNumber_CoerceEx(CObject **, CObject **);
+CAPI_FUNC(long) CObject_Hash(CObject *);
+CAPI_FUNC(long) CObject_HashNotImplemented(CObject *);
+CAPI_FUNC(int) CObject_IsTrue(CObject *);
+CAPI_FUNC(int) CObject_Not(CObject *);
+CAPI_FUNC(int) MxCallable_Check(CObject *);
+CAPI_FUNC(int) MxNumber_Coerce(CObject **, CObject **);
+CAPI_FUNC(int) MxNumber_CoerceEx(CObject **, CObject **);
 
-MxAPI_FUNC(void) CObject_ClearWeakRefs(CObject *);
+CAPI_FUNC(void) CObject_ClearWeakRefs(CObject *);
 
 /* A slot function whose address we need to compare */
 extern int _CObject_SlotCompare(CObject *, CObject *);
 /* Same as CObject_Generic{Get,Set}Attr, but passing the attributes
    dict as the last parameter. */
-MxAPI_FUNC(CObject *)
+CAPI_FUNC(CObject *)
 _CObject_GenericGetAttrWithDict(CObject *, CObject *, CObject *);
-MxAPI_FUNC(int)
+CAPI_FUNC(int)
 _CObject_GenericSetAttrWithDict(CObject *, CObject *,
         CObject *, CObject *);
 
@@ -504,25 +504,25 @@ _CObject_GenericSetAttrWithDict(CObject *, CObject *,
    returning the names of the current locals.  In this case, if there are
    no current locals, NULL is returned, and MxErr_Occurred() is false.
  */
-MxAPI_FUNC(CObject *) CObject_Dir(CObject *);
+CAPI_FUNC(CObject *) CObject_Dir(CObject *);
 
 
 /* Helpers for printing recursive container types */
-MxAPI_FUNC(int) Mx_ReprEnter(CObject *);
-MxAPI_FUNC(void) Mx_ReprLeave(CObject *);
+CAPI_FUNC(int) Mx_ReprEnter(CObject *);
+CAPI_FUNC(void) Mx_ReprLeave(CObject *);
 
 /* Helpers for hash functions */
-MxAPI_FUNC(long) _Mx_HashDouble(double);
-MxAPI_FUNC(long) _Mx_HashPointer(void*);
+CAPI_FUNC(long) _Mx_HashDouble(double);
+CAPI_FUNC(long) _Mx_HashPointer(void*);
 
 typedef struct {
     long prefix;
     long suffix;
 } _Mx_HashSecret_t;
-MxAPI_DATA(_Mx_HashSecret_t) _Mx_HashSecret;
+CAPI_DATA(_Mx_HashSecret_t) _Mx_HashSecret;
 
 #ifdef Mx_DEBUG
-MxAPI_DATA(int) _Mx_HashSecret_Initialized;
+CAPI_DATA(int) _Mx_HashSecret_Initialized;
 #endif
 
 /* Helper for passing objects to printf and the like.
@@ -702,12 +702,12 @@ environment the global variable trick is not safe.)
  * #ifdefs (we used to do that -- it was impenetrable).
  */
 #ifdef Mx_REF_DEBUG
-MxAPI_DATA(Mx_ssize_t) _Mx_RefTotal;
-MxAPI_FUNC(void) _Mx_NegativeRefcount(const char *fname,
+CAPI_DATA(Mx_ssize_t) _Mx_RefTotal;
+CAPI_FUNC(void) _Mx_NegativeRefcount(const char *fname,
         int lineno, CObject *op);
-MxAPI_FUNC(CObject *) _PyDict_Dummy(void);
-MxAPI_FUNC(CObject *) _PySet_Dummy(void);
-MxAPI_FUNC(Mx_ssize_t) _Mx_GetRefTotal(void);
+CAPI_FUNC(CObject *) _PyDict_Dummy(void);
+CAPI_FUNC(CObject *) _PySet_Dummy(void);
+CAPI_FUNC(Mx_ssize_t) _Mx_GetRefTotal(void);
 #define _Mx_INC_REFTOTAL        _Mx_RefTotal++
 #define _Mx_DEC_REFTOTAL        _Mx_RefTotal--
 #define _Mx_REF_DEBUG_COMMA     ,
@@ -724,8 +724,8 @@ MxAPI_FUNC(Mx_ssize_t) _Mx_GetRefTotal(void);
 #endif /* Mx_REF_DEBUG */
 
 #ifdef COUNT_ALLOCS
-MxAPI_FUNC(void) inc_count(CType *);
-MxAPI_FUNC(void) dec_count(CType *);
+CAPI_FUNC(void) inc_count(CType *);
+CAPI_FUNC(void) dec_count(CType *);
 #define _Mx_INC_TPALLOCS(OP)    inc_count(Mx_TYPE(OP))
 #define _Mx_INC_TPFREES(OP)     dec_count(Mx_TYPE(OP))
 #define _Mx_DEC_TPFREES(OP)     Mx_TYPE(OP)->tp_frees--
@@ -739,12 +739,12 @@ MxAPI_FUNC(void) dec_count(CType *);
 
 #ifdef Mx_TRACE_REFS
 /* Mx_TRACE_REFS is such major surgery that we call external routines. */
-MxAPI_FUNC(void) _Mx_NewReference(CObject *);
-MxAPI_FUNC(void) _Mx_ForgetReference(CObject *);
-MxAPI_FUNC(void) _Mx_Dealloc(CObject *);
-MxAPI_FUNC(void) _Mx_PrintReferences(FILE *);
-MxAPI_FUNC(void) _Mx_PrintReferenceAddresses(FILE *);
-MxAPI_FUNC(void) _Mx_AddToAllObjects(CObject *, int force);
+CAPI_FUNC(void) _Mx_NewReference(CObject *);
+CAPI_FUNC(void) _Mx_ForgetReference(CObject *);
+CAPI_FUNC(void) _Mx_Dealloc(CObject *);
+CAPI_FUNC(void) _Mx_PrintReferences(FILE *);
+CAPI_FUNC(void) _Mx_PrintReferenceAddresses(FILE *);
+CAPI_FUNC(void) _Mx_AddToAllObjects(CObject *, int force);
 
 #else
 /* Without Mx_TRACE_REFS, there's little enough to do that we expand code
@@ -859,8 +859,8 @@ MxAPI_FUNC(void) _Mx_AddToAllObjects(CObject *, int force);
 These are provided as conveniences to Mxthon runtime embedders, so that
 they can have object code that is not dependent on Mxthon compilation flags.
  */
-//MxAPI_FUNC(void) Mx_IncRef(CObject *);
-//MxAPI_FUNC(void) Mx_DecRef(CObject *);
+//CAPI_FUNC(void) Mx_IncRef(CObject *);
+//CAPI_FUNC(void) Mx_DecRef(CObject *);
 
 /*
 _Mx_NoneStruct is an object of undefined type which can be used in contexts
@@ -868,7 +868,7 @@ where NULL (nil) is not suitable (since NULL often means 'error').
 
 Don't forget to apply Mx_INCREF() when returning this value!!!
  */
-MxAPI_DATA(CObject) _Mx_NoneStruct; /* Don't use this directly */
+CAPI_DATA(CObject) _Mx_NoneStruct; /* Don't use this directly */
 #define Mx_None (&_Mx_NoneStruct)
 
 /* Macro for returning Mx_None from a function */
@@ -878,7 +878,7 @@ MxAPI_DATA(CObject) _Mx_NoneStruct; /* Don't use this directly */
 Mx_NotImplemented is a singleton used to signal that an operation is
 not implemented for a given type combination.
  */
-MxAPI_DATA(CObject) _Mx_NotImplementedStruct; /* Don't use this directly */
+CAPI_DATA(CObject) _Mx_NotImplementedStruct; /* Don't use this directly */
 #define Mx_NotImplemented (&_Mx_NotImplementedStruct)
 
 /* Rich comparison opcodes */
@@ -892,7 +892,7 @@ MxAPI_DATA(CObject) _Mx_NotImplementedStruct; /* Don't use this directly */
 /* Maps Mx_LT to Mx_GT, ..., Mx_GE to Mx_LE.
  * Defined in object.c.
  */
-MxAPI_DATA(int) _Mx_SwappedOp[];
+CAPI_DATA(int) _Mx_SwappedOp[];
 
 /*
 Define staticforward and statichere for source compatibility with old

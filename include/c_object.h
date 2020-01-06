@@ -96,7 +96,7 @@ extern "C"
  * error.  The flags argument is used to enable certain printing
  * options. The only option currently supported is Mx_Print_RAW.
  */
-MxAPI_FUNC(int) CObject_Print(CObject *o, FILE *fp, int flags);
+CAPI_FUNC(int) CObject_Print(CObject *o, FILE *fp, int flags);
 
 /**
  * Returns 1 if o has the attribute attr_name, and 0 otherwise.
@@ -105,14 +105,14 @@ MxAPI_FUNC(int) CObject_Print(CObject *o, FILE *fp, int flags);
  *
  * This function always succeeds.
  */
-MxAPI_FUNC(int) CObject_HasAttrString(CObject *o, const char *attr_name);
+CAPI_FUNC(int) CObject_HasAttrString(CObject *o, const char *attr_name);
 
 /**
  * Retrieve an attributed named attr_name form object o.
  * Returns the attribute value on success, or NULL on failure.
  * This is the equivalent of the Mechanica expression: o.attr_name.
  */
-MxAPI_FUNC(CObject)* CObject_GetAttrString(CObject *o,
+CAPI_FUNC(CObject)* CObject_GetAttrString(CObject *o,
 		const char *attr_name);
 
 
@@ -122,21 +122,21 @@ MxAPI_FUNC(CObject)* CObject_GetAttrString(CObject *o,
  * hasattr(o,attr_name).
  * This function always succeeds.
  */
-MxAPI_FUNC(int) CObject_HasAttr(CObject *o, CObject *attr_name);
+CAPI_FUNC(int) CObject_HasAttr(CObject *o, CObject *attr_name);
 
 /**
  * Retrieve an attributed named attr_name form object o.
  * Returns the attribute value on success, or NULL on failure.
  * This is the equivalent of the Mechanica expression: o.attr_name.
  */
-MxAPI_FUNC(CObject)* CObject_GetAttr(CObject *o, CObject *attr_name);
+CAPI_FUNC(CObject)* CObject_GetAttr(CObject *o, CObject *attr_name);
 
 /**
  * Set the value of the attribute named attr_name, for object o,
  * to the value, v. Returns -1 on failure.  This is
  * the equivalent of the Mechanica statement: o.attr_name=v.
  */
-MxAPI_FUNC(int) CObject_SetAttrString(CObject *o, const char *attr_name,
+CAPI_FUNC(int) CObject_SetAttrString(CObject *o, const char *attr_name,
 		CObject *v);
 
 /**
@@ -144,21 +144,21 @@ MxAPI_FUNC(int) CObject_SetAttrString(CObject *o, const char *attr_name,
  * to the value, v. Returns -1 on failure.  This is
  * the equivalent of the Mechanica statement: o.attr_name=v.
  */
-MxAPI_FUNC(int) CObject_SetAttr(CObject *o, CObject *attr_name, CObject *v);
+CAPI_FUNC(int) CObject_SetAttr(CObject *o, CObject *attr_name, CObject *v);
 
 /**
  * Delete attribute named attr_name, for object o. Returns
  * -1 on failure.  This is the equivalent of the Mechanica
  * statement: del o.attr_name.
  */
-MxAPI_FUNC(int) CObject_DelAttrString(CObject *o, const char *attr_name);
+CAPI_FUNC(int) CObject_DelAttrString(CObject *o, const char *attr_name);
 
 /**
  * Delete attribute named attr_name, for object o. Returns -1
  * on failure.  This is the equivalent of the Mechanica
  * statement: del o.attr_name.
  */
-MxAPI_FUNC(int) CObject_DelAttr(CObject *o, CObject *attr_name);
+CAPI_FUNC(int) CObject_DelAttr(CObject *o, CObject *attr_name);
 
 /**
  * Compute the string representation of object, o.  Returns the
@@ -167,7 +167,7 @@ MxAPI_FUNC(int) CObject_DelAttr(CObject *o, CObject *attr_name);
  *
  * Mxlled by the repr() built-in function.
  */
-MxAPI_FUNC(CObject) *CObject_Repr(CObject *o);
+CAPI_FUNC(CObject) *CObject_Repr(CObject *o);
 
 /**
  * Compute the string representation of object, o.  Returns the
@@ -176,7 +176,7 @@ MxAPI_FUNC(CObject) *CObject_Repr(CObject *o);
  *
  * Mxlled by the str() and print() built-in functions.
  */
-MxAPI_FUNC(CObject) *CObject_Str(CObject *o);
+CAPI_FUNC(CObject) *CObject_Str(CObject *o);
 
 /**
  * Mxll the method named m of object o with a variable number of
@@ -184,7 +184,7 @@ MxAPI_FUNC(CObject) *CObject_Str(CObject *o);
  * on success, or NULL on failure.  This is the equivalent of
  * the Mechanica expression: o.method(args).
  */
-MxAPI_FUNC(CObject *) CObject_CallMethod(CObject *o,
+CAPI_FUNC(CObject *) CObject_CallMethod(CObject *o,
 		const char *method,
 		const char *format, ...);
 
@@ -195,7 +195,7 @@ MxAPI_FUNC(CObject *) CObject_CallMethod(CObject *o,
  * on success, or NULL on failure.  This is the equivalent of
  * the Mechanica expression: o.method(args).
  */
-MxAPI_FUNC(CObject *) CObject_CallMethodObjArgs(CObject *o,
+CAPI_FUNC(CObject *) CObject_CallMethodObjArgs(CObject *o,
 		CObject *method, ...);
 
 /**
@@ -204,7 +204,7 @@ MxAPI_FUNC(CObject *) CObject_CallMethodObjArgs(CObject *o,
  expression: hash(o).
  */
 
-MxAPI_FUNC(long) CObject_Hash(CObject *o);
+CAPI_FUNC(long) CObject_Hash(CObject *o);
 
 /**
  *  Returns 1 if the object, o, is considered to be true, 0 if o is
@@ -212,21 +212,21 @@ MxAPI_FUNC(long) CObject_Hash(CObject *o);
  Mechanica expression: not not o
  */
 
-MxAPI_FUNC(int) CObject_IsTrue(CObject *o);
+CAPI_FUNC(int) CObject_IsTrue(CObject *o);
 
 /**
  * Returns 0 if the object, o, is considered to be true, 1 if o is
  considered to be false and -1 on failure. This is equivalent to the
  Mechanica expression: not o
  */
-MxAPI_FUNC(int) CObject_Not(CObject *o);
+CAPI_FUNC(int) CObject_Not(CObject *o);
 
 /**
  * On success, returns a type object corresponding to the object
  * type of object o. On failure, returns NULL.  This is
  * equivalent to the Mechanica expression: type(o).
  */
-MxAPI_DATA(struct CType*) CObject_Type;
+CAPI_DATA(struct CType*) CObject_Type;
 
 /**
  * Return the size of object o.  If the object, o, provides
@@ -234,28 +234,28 @@ MxAPI_DATA(struct CType*) CObject_Type;
  * returned. On error, -1 is returned.  This is the equivalent
  * to the Mechanica expression: len(o).
  */
-MxAPI_FUNC(Mx_ssize_t) CObject_Size(CObject *o);
+CAPI_FUNC(Mx_ssize_t) CObject_Size(CObject *o);
 
 /**
  * Guess the size of object o using len(o) or o.__length_hint__().
  * If neither of those return a non-negative value, then return the
  * default value.  If one of the calls fails, this function returns -1.
  */
-MxAPI_FUNC(Mx_ssize_t) CObject_Length(CObject *o);
+CAPI_FUNC(Mx_ssize_t) CObject_Length(CObject *o);
 
 /**
  * Return element of o corresponding to the object, key, or NULL
  * on failure. This is the equivalent of the Mechanica expression:
  * o[key].
  */
-MxAPI_FUNC(CObject *) CObject_GetItem(CObject *o, CObject *key);
+CAPI_FUNC(CObject *) CObject_GetItem(CObject *o, CObject *key);
 
 /**
  * Map the object, key, to the value, v.  Returns
  * -1 on failure.  This is the equivalent of the Mechanica
  * statement: o[key]=v.
  */
-MxAPI_FUNC(int) CObject_SetItem(CObject *o, CObject *key, CObject *v);
+CAPI_FUNC(int) CObject_SetItem(CObject *o, CObject *key, CObject *v);
 
 /**
  * Remove the mapping for object, key, from the object *o.
@@ -263,25 +263,25 @@ MxAPI_FUNC(int) CObject_SetItem(CObject *o, CObject *key, CObject *v);
  the Mechanica statement: del o[key].
  */
 
-MxAPI_FUNC(int) CObject_DelItemString(CObject *o, const char *key);
+CAPI_FUNC(int) CObject_DelItemString(CObject *o, const char *key);
 
 /**
  * Delete the mapping for key from *o.  Returns -1 on failure.
  * This is the equivalent of the Mechanica statement: del o[key].
  */
-MxAPI_FUNC(int) CObject_DelItem(CObject *o, CObject *key);
+CAPI_FUNC(int) CObject_DelItem(CObject *o, CObject *key);
 
 
-MxAPI_FUNC(int) CObject_IsInstance(CObject *object, CObject *typeorclass);
+CAPI_FUNC(int) CObject_IsInstance(CObject *object, CObject *typeorclass);
 /* isinstance(object, typeorclass) */
 
 
 
-MxAPI_FUNC(void) Mx_Dealloc(CObject *);
+CAPI_FUNC(void) Mx_Dealloc(CObject *);
 
-MxAPI_FUNC(uint32_t) Mx_IncRef(CObject *o);
+CAPI_FUNC(uint32_t) Mx_IncRef(CObject *o);
 
-MxAPI_FUNC(uint32_t) Mx_DecRef(CObject *o);
+CAPI_FUNC(uint32_t) Mx_DecRef(CObject *o);
 
 /**
  * Become
@@ -362,7 +362,7 @@ MxAPI_FUNC(uint32_t) Mx_DecRef(CObject *o);
  * Labels: Reflection
  */
 
-MxAPI_FUNC(HRESULT) CObject_ChangeType(CObject *obj, const CType *type);
+CAPI_FUNC(HRESULT) CObject_ChangeType(CObject *obj, const CType *type);
 
 
 
