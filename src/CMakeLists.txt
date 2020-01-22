@@ -38,6 +38,7 @@ set(SRC
 set(HEADERS
   ${CARBON_PUBLIC_HEADERS}
   CObject.hpp
+  CType.hpp
   # c_error.h
   # MxDebug.h
   # carbon_llvm.h

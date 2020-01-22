@@ -11,7 +11,7 @@
 #define MX_IMPORTING_NUMPY_ARRAY
 
 #include "CObject.hpp"
-//#include "CType.hpp"
+#include "CType.hpp"
 
 #include <iostream>
 
@@ -45,6 +45,8 @@ static PyObject * moduleinit(void)
 
     if (m == NULL)
         return NULL;
+
+    CType_init(m);
 
     CObject_init(m);
 
@@ -89,20 +91,54 @@ PyMODINIT_FUNC PyInit__carbon(void)
 /**
  * Initialize the entire runtime.
  */
-CAPI_FUNC(int) Mx_Initialize(int) {
+CAPI_FUNC(HRESULT) C_Initialize(int) {
+    std::cout << MX_FUNCTION << std::endl;
+
     if(!Py_IsInitialized()) {
         Py_Initialize();
     }
-    
+
+
     if(carbonModule == NULL) {
-        moduleinit();
+
+        carbonModule = PyModule_Create(&carbon_module);
+
+
+        CType_init(carbonModule);
+
+        CObject_init(carbonModule);
+
+
+        /*
+
+        if (empty_tuple == NULL)
+            empty_tuple = PyTuple_New(0);
+
+        ProxyType.tp_free = _PyObject_GC_Del;
+
+        if (PyType_Ready(&ProxyType) < 0)
+            return NULL;
+
+        Py_INCREF(&ProxyType);
+        PyModule_AddObject(m, "ProxyBase", (PyObject *)&ProxyType);
+
+        if (api_object == NULL) {
+            api_object = PyCObject_FromVoidPtr(&wrapper_capi, NULL);
+            if (api_object == NULL)
+            return NULL;
+        }
+        Py_INCREF(api_object);
+        PyModule_AddObject(m, "_CAPI", api_object);
+
+         */
+
+
     }
-    
-    return 0;
+
+    return S_OK;
 }
 
-
-
-
-
-
+CAPI_FUNC(HRESULT) C_Finalize()
+{
+    return S_OK;
+}

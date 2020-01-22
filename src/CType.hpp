@@ -1,5 +1,5 @@
 /*
- * CObject.h
+ * CType.hpp
  *
  *  Created on: Apr 2, 2017
  *      Author: andy
@@ -7,18 +7,19 @@
  *  Private include file
  */
 
-#ifndef _SRC_COBJECT_HPP_
-#define _SRC_COBJECT_HPP_
+#ifndef _SRC_CTYPE_HPP_
+#define _SRC_CTYPE_HPP_
 
 
 #include "carbon.h"
 
 
+
 /**
  * Init and add to python module
  */
-HRESULT CObject_init(PyObject *m);
+HRESULT CType_init(PyObject *m);
 
 
 
-#endif /* _SRC_COBJECT_HPP_ */
+#endif /* _SRC_CTYPE_HPP_ */

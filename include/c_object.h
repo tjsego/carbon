@@ -15,7 +15,9 @@
 /**
  * Basic opaque Mechanica object type.
  */
-MxAPI_STRUCT(CObject);
+CAPI_STRUCT(CObject);
+
+
 
 
 
@@ -226,7 +228,7 @@ CAPI_FUNC(int) CObject_Not(CObject *o);
  * type of object o. On failure, returns NULL.  This is
  * equivalent to the Mechanica expression: type(o).
  */
-CAPI_DATA(struct CType*) CObject_Type;
+CAPI_DATA(struct CType*) CObject_TypePtr;
 
 /**
  * Return the size of object o.  If the object, o, provides
@@ -362,7 +364,7 @@ CAPI_FUNC(uint32_t) Mx_DecRef(CObject *o);
  * Labels: Reflection
  */
 
-CAPI_FUNC(HRESULT) CObject_ChangeType(CObject *obj, const CType *type);
+CAPI_FUNC(HRESULT) CObject_ChangeType(CObject *obj, const struct CType *type);
 
 
 

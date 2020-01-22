@@ -13,7 +13,7 @@
 #include <CObject.hpp>
 
 
-static CType objectType = {
+CType CObject_Type = {
     {0, NULL},
     .tp_name = "custom.Custom",
     .tp_doc = "Custom objects",
@@ -23,7 +23,8 @@ static CType objectType = {
     .tp_new = PyType_GenericNew
 };
 
-CType* CObject_Type = &objectType;
+CType* CObject_TypePtr = &CObject_Type;
+
 
 
 
@@ -100,14 +101,12 @@ long CObject_HashNotImplemented(CObject *self)
 
 HRESULT CObject_init(PyObject *m) {
 
-    if (PyType_Ready((PyTypeObject  *)CObject_Type) < 0)
+    if (PyType_Ready((PyTypeObject*)CObject_TypePtr) < 0)
         return E_FAIL;
 
-
-    Py_INCREF(CObject_Type);
-    if (PyModule_AddObject(m, "Object", (PyObject *) CObject_Type) < 0) {
+    Py_INCREF(CObject_TypePtr);
+    if (PyModule_AddObject(m, "Object", (PyObject *)CObject_TypePtr) < 0) {
         Py_DECREF(&CObject_Type);
-        Py_DECREF(m);
         return E_FAIL;
     }
 

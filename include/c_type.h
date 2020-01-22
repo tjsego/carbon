@@ -30,24 +30,11 @@ extern "C" {
 /**
  * Basic opaque Mechanica object type.
  */
-MxAPI_STRUCT(CType);
+CAPI_STRUCT(CType);
 
-#ifdef CType
-#error CType defined as macro
-#endif
-
-#ifdef CType_Check
-#error CType_Check defined as macro
-#endif
+CAPI_DATA(CType*) CType_TypePtr;
 
 
-#ifdef CObject
-#error CObject defined as macro
-#endif
-
-struct CObject;
-
-CAPI_FUNC(int) FooTest();
 
 
 

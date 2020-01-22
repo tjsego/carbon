@@ -13,24 +13,33 @@ static_assert(sizeof(CType) == sizeof(PyTypeObject), "CType must be same as PyTy
 static_assert(offsetof(CType, tp_finalize) == offsetof(PyTypeObject, tp_finalize), "CType offset different");
 
 
-static CType typeType = {
+CType CType_Type = {
     {0, NULL},
     .tp_name = "carbon.Type",
-    .tp_doc = "Custom objects",
     .tp_basicsize = sizeof(CType),
     .tp_itemsize = 0,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = PyType_GenericNew
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    .tp_new = PyType_GenericNew,
+    .tp_doc = "metatype for base of Carbon Objects",
 };
 
 
 
-CAPI_DATA (CType) *CType_Type = &typeType;
+HRESULT CType_init(PyObject *m) {
 
+    CType_Type.tp_base = (CType*)&PyType_Type;
 
+    if (PyType_Ready((PyTypeObject*)&CType_Type) < 0) {
+        return E_FAIL;
+    }
 
-void CType_init(PyObject *m) {
+    Py_INCREF(CObject_TypePtr);
+    if (PyModule_AddObject(m, "Type", (PyObject *)&CType_Type) < 0) {
+        Py_DECREF(&CType_Type);
+        return E_FAIL;
+    }
 
+    return S_OK;
 }
 
 //CType::CType(const char* name, CType* base) : CObject{CType_Type}
@@ -54,6 +63,6 @@ CAPI_FUNC(int) CType_IsSubtype(CType *a, CType *b) {
         if (a == b)
             return 1;
         a = a->tp_base;
-    } while (a != NULL && a != CObject_Type);
-    return b == CObject_Type;
+    } while (a != NULL && a != CObject_TypePtr);
+    return b == CObject_TypePtr;
 }

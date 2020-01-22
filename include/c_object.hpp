@@ -56,7 +56,7 @@ struct CObject
     //    // default ctor, Python already set the ob_type and ob_refcnt.
     //}
 
-    static CType *type() { return CObject_Type; };
+    static CType *type() { return CObject_TypePtr; };
 };
 
 HRESULT CObject_ChangeType(CObject *obj, const CType *type);
@@ -157,7 +157,7 @@ HRESULT CObject_ChangeType(CObject *obj, const CType *type);
 //#endif
 //} PyTypeObject;
 
-CAPI_DATA(struct CType*) CType_Type;
+
 
 struct CType : CObject {
 
@@ -221,7 +221,7 @@ struct CType : CObject {
     struct PyMethodDef *tp_methods;
     struct PyMemberDef *tp_members;
     struct PyGetSetDef *tp_getset;
-    struct CType *tp_base;
+    CType *tp_base;
     PyObject *tp_dict;
     descrgetfunc tp_descr_get;
     descrsetfunc tp_descr_set;
@@ -252,14 +252,16 @@ struct CType : CObject {
     struct _typeobject *tp_next;
 #endif
 
-    static bool classof(const CObject *o) {
-        return o->ob_type == CType_Type;
-    }
+    //static bool classof(const CObject *o) {
+    //    return o->ob_type == CType_Type;
+    //}
 
-    static CType *type() {return CType_Type;};
+    //static CType *type() {return CType_Type;};
 
     //CType(const char* name, CType *base);
 };
+
+CAPI_DATA(CType) CType_Type;
 
 
 
@@ -439,6 +441,14 @@ CAPI_FUNC(int) CType_IsSubtype(CType *, CType *);
 
 CAPI_DATA(CType) MxBaseObject_Type; /* built-in 'object' */
 CAPI_DATA(CType) MxSuper_Type; /* built-in 'super' */
+
+
+/**
+ * define the type objects for the object and type
+ */
+CAPI_DATA(CType) CObject_Type;
+
+CAPI_DATA(CType) CType_Type;
 
 //#define CType_Check(op) \
 //        CType_FastSubclass(Mx_TYPE(op), Mx_TPFLAGS_TYPE_SUBCLASS)

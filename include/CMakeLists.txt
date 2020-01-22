@@ -31,6 +31,7 @@ set (_PUBLIC_HEADERS
   c_port.h
   c_object.h
   c_object.hpp
+  c_type.h
   )
 
 message("_PUBLIC_HEADERS: ${_PUBLIC_HEADERS}")

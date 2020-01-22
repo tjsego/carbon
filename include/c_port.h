@@ -30,6 +30,10 @@ typedef float mx_real;
 
 typedef size_t         Mx_ssize_t;
 
+#ifndef __cplusplus
+typedef uint8_t bool;
+#endif
+
 
 
 /* Declarations for symbol visibility.
@@ -114,11 +118,11 @@ typedef size_t         Mx_ssize_t;
 #endif
 
 /** Macro for pre-defining opaque public data types */
-#ifndef MxAPI_STRUCT
+#ifndef CAPI_STRUCT
 #    if defined(__cplusplus)
-#        define MxAPI_STRUCT(TYPE) struct TYPE
+#        define CAPI_STRUCT(TYPE) struct TYPE
 #    else
-#        define MxAPI_STRUCT(TYPE) typedef struct TYPE TYPE
+#        define CAPI_STRUCT(TYPE) typedef struct TYPE TYPE
 #    endif
 #endif
 
