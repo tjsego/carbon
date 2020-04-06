@@ -228,7 +228,7 @@ CAPI_FUNC(int) CObject_Not(CObject *o);
  * type of object o. On failure, returns NULL.  This is
  * equivalent to the Mechanica expression: type(o).
  */
-CAPI_DATA(struct CType*) CObject_TypePtr;
+CAPI_DATA(PyTypeObject*) CObject_TypePtr;
 
 /**
  * Return the size of object o.  If the object, o, provides

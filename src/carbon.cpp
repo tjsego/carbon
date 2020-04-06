@@ -25,14 +25,14 @@ static PyMethodDef methods[] = {
 
 static struct PyModuleDef carbon_module = {
         PyModuleDef_HEAD_INIT,
-        "_carbon",   /* name of module */
+        "carbon",   /* name of module */
         NULL, /* module documentation, may be NULL */
         -1,       /* size of per-interpreter state of the module,
                  or -1 if the module keeps state in global variables. */
         methods
 };
 
-static PyObject *carbonModule = NULL;
+PyObject *Carbon_ModulePtr = NULL;
 
 static PyObject * moduleinit(void)
 {
@@ -40,6 +40,7 @@ static PyObject * moduleinit(void)
     PyObject *m;
 
 
+    std::cout << "creating carbon module" << std::endl;
     m = PyModule_Create(&carbon_module);
 
 
@@ -49,6 +50,11 @@ static PyObject * moduleinit(void)
     CType_init(m);
 
     CObject_init(m);
+
+    if (PyType_Ready(&CMemberDescr_Type) < 0) {
+        Py_FatalError("Can't initialize CMemberDescr_Type type");
+        return NULL;
+    }
 
 
     /*
@@ -76,13 +82,13 @@ static PyObject * moduleinit(void)
 
 
     
-    carbonModule = m;
+    Carbon_ModulePtr = m;
 
     return m;
 }
 
 
-PyMODINIT_FUNC PyInit__carbon(void)
+PyMODINIT_FUNC PyInit_carbon(void)
 {
     return moduleinit();
 }
@@ -99,14 +105,20 @@ CAPI_FUNC(HRESULT) C_Initialize(int) {
     }
 
 
-    if(carbonModule == NULL) {
+    std::cout << "creating carbon module" << std::endl;
+    if(Carbon_ModulePtr == NULL) {
 
-        carbonModule = PyModule_Create(&carbon_module);
+        Carbon_ModulePtr = PyModule_Create(&carbon_module);
 
 
-        CType_init(carbonModule);
+        CType_init(Carbon_ModulePtr);
 
-        CObject_init(carbonModule);
+        CObject_init(Carbon_ModulePtr);
+
+        if (PyType_Ready((PyTypeObject*)&CListWrap_Type) < 0) {
+            std::cout << "could not initialize CListWrap_Type " << std::endl;
+            return E_FAIL;
+        }
 
 
         /*

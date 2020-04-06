@@ -32,7 +32,7 @@ extern "C" {
  */
 CAPI_STRUCT(CType);
 
-CAPI_DATA(CType*) CType_TypePtr;
+CAPI_DATA(PyTypeObject*) CType_TypePtr;
 
 
 

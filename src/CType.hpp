@@ -1,5 +1,5 @@
 /*
- * CType.hpp
+ * CType.h
  *
  *  Created on: Apr 2, 2017
  *      Author: andy

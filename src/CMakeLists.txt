@@ -7,6 +7,9 @@ message(STATUS "numpy: ${NUMPY_INCLUDE_DIR}")
 set(SRC
   CObject.cpp
   CType.cpp
+  CDescrObject.cpp
+  CListWrap.cpp
+  CEvent.cpp
 #  c_error.cpp
 #  c_moduledef.cpp
 #  c_callable.cpp
@@ -39,6 +42,7 @@ set(HEADERS
   ${CARBON_PUBLIC_HEADERS}
   CObject.hpp
   CType.hpp
+  CEvent.hpp
   # c_error.h
   # MxDebug.h
   # carbon_llvm.h
@@ -272,3 +276,5 @@ target_link_libraries(carbon_shared
 
 add_library(carbon ALIAS carbon_shared)
 add_library(Carbon::Carbon ALIAS carbon_shared)
+add_library(Carbon::Static ALIAS carbon_static)
+add_library(Carbon::Shared ALIAS carbon_shared)

@@ -13,6 +13,8 @@
 #include <c_port.h>
 #include <c_object.h>
 #include <c_type.h>
+#include <c_descrobject.h>
+#include <c_listwrap.h>
 
 #ifdef __cplusplus
 #include <c_object.hpp>
@@ -31,5 +33,15 @@ CAPI_FUNC(HRESULT) C_Initialize(int);
  * Shutdown and cleanup.
  */
 CAPI_FUNC(HRESULT) C_Finalize();
+
+/**
+ * The carbon module, initialized with C_Initialize;
+ */
+CAPI_DATA(PyObject*) Carbon_ModulePtr;
+
+/**
+ * Called by Python runtime to create and import the module
+ */
+PyMODINIT_FUNC PyInit_carbon(void);
 
 #endif /* _INCLUDED_CARBON_H_ */

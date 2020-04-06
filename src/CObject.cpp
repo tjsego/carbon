@@ -13,17 +13,17 @@
 #include <CObject.hpp>
 
 
-CType CObject_Type = {
-    {0, NULL},
-    .tp_name = "custom.Custom",
-    .tp_doc = "Custom objects",
+PyTypeObject CObject_Type = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+    .tp_name = "Object",
+    .tp_doc = "carbon base object",
     .tp_basicsize = sizeof(CObject),
     .tp_itemsize = 0,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_new = PyType_GenericNew
 };
 
-CType* CObject_TypePtr = &CObject_Type;
+PyTypeObject* CObject_TypePtr = &CObject_Type;
 
 
 
@@ -100,6 +100,8 @@ long CObject_HashNotImplemented(CObject *self)
 }
 
 HRESULT CObject_init(PyObject *m) {
+
+    CType_Type.tp_base = (CType*)&CType_Type;
 
     if (PyType_Ready((PyTypeObject*)CObject_TypePtr) < 0)
         return E_FAIL;
