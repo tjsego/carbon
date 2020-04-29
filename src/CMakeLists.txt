@@ -10,6 +10,7 @@ set(SRC
   CDescrObject.cpp
   CListWrap.cpp
   CEvent.cpp
+  CError.cpp
 #  c_error.cpp
 #  c_moduledef.cpp
 #  c_callable.cpp
@@ -43,7 +44,6 @@ set(HEADERS
   CObject.hpp
   CType.hpp
   CEvent.hpp
-  # c_error.h
   # MxDebug.h
   # carbon_llvm.h
   # carbon_private.h

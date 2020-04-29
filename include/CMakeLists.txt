@@ -35,6 +35,7 @@ set (_PUBLIC_HEADERS
   c_descrobject.h
   c_listwrap.h
   c_event.h
+  c_error.h
   )
 
 message("_PUBLIC_HEADERS: ${_PUBLIC_HEADERS}")

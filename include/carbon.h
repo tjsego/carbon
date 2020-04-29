@@ -15,6 +15,7 @@
 #include <c_type.h>
 #include <c_descrobject.h>
 #include <c_listwrap.h>
+#include <c_error.h>
 
 #ifdef __cplusplus
 #include <c_object.hpp>
