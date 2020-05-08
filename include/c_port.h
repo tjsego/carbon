@@ -93,11 +93,18 @@ typedef uint8_t bool;
 #endif /* Mx_ENABLE_SHARED */
 
 /* If no external linkage macros defined by now, create defaults */
+
+#ifdef _WIN32
+#define CAPI_EXPORT __declspec(dllexport)
+#else
+#define CAPI_EXPORT __attribute__((visibility("default")))
+#endif
+
 #ifndef CAPI_FUNC
 #  ifdef __cplusplus
-#    define CAPI_FUNC(RTYPE) extern "C" RTYPE
+#    define CAPI_FUNC(RTYPE) extern "C" CAPI_EXPORT RTYPE
 #  else
-#    define CAPI_FUNC(RTYPE) extern RTYPE
+#    define CAPI_FUNC(RTYPE) extern CAPI_EXPORT RTYPE
 #  endif
 #endif
 
@@ -105,7 +112,7 @@ typedef uint8_t bool;
 //#  ifdef __cplusplus
 //#    define CAPI_DATA(RTYPE) extern "C" RTYPE
 //#  else
-#    define CAPI_DATA(RTYPE) extern RTYPE
+#    define CAPI_DATA(RTYPE) extern RTYPE CAPI_EXPORT
 //#  endif
 #endif
 
