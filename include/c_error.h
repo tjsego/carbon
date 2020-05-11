@@ -25,6 +25,8 @@ enum CError_Options {
 
 #define mx_error(code, msg) CErr_Set(code, msg, __LINE__, __FILE__, MX_FUNCTION)
 
+#define c_error(code, msg) CErr_Set(code, msg, __LINE__, __FILE__, MX_FUNCTION)
+
 
 CAPI_FUNC(HRESULT) CErr_Set(HRESULT code, const char* msg, int line, const char* file, const char* func);
 
