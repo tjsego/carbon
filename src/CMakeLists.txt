@@ -159,16 +159,10 @@ target_include_directories(carbon_obj PUBLIC
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  #${PYTHON_INCLUDE_DIRS}
+  ${PYTHON_INCLUDE_DIRS}
   #${NUMPY_INCLUDE_DIR}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
 )
-
-
-target_link_libraries(carbon_obj
-  Python::Python
-  )
-
 
 source_group("Public Header Files" FILES ${CARBON_PUBLIC_HEADERS})
 
@@ -223,13 +217,9 @@ target_include_directories(carbon_static PUBLIC
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  #${PYTHON_INCLUDE_DIRS}
+  ${PYTHON_INCLUDE_DIRS}
   #${NUMPY_INCLUDE_DIR}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-  )
-
-target_link_libraries(carbon_static
-  Python::Python
   )
 
 # shared and static libraries built from the same object files
@@ -248,16 +238,39 @@ target_include_directories(carbon_py PRIVATE
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  #${PYTHON_INCLUDE_DIRS}
+  ${PYTHON_INCLUDE_DIRS}
   #${NUMPY_INCLUDE_DIR}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-)
-
-
-
-target_link_libraries(carbon_py
-  Python::Python
   )
+
+
+if(WIN32 OR CYGWIN)
+  # Link against the Python shared library on Windows
+  target_link_libraries(carbon_py PRIVATE ${PYTHON_LIBRARIES})
+
+elseif(APPLE)
+  # It's quite common to have multiple copies of the same Python version
+  # installed on one's system. E.g.: one copy from the OS and another copy
+  # that's statically linked into an application like Blender or Maya.
+  # If we link our plugin library against the OS Python here and import it
+  # into Blender or Maya later on, this will cause segfaults when multiple
+  # conflicting Python instances are active at the same time (even when they
+  # are of the same version).
+
+  # Windows is not affected by this issue since it handles DLL imports
+  # differently. The solution for Linux and Mac OS is simple: we just don't
+  # link against the Python library. The resulting shared library will have
+  # missing symbols, but that's perfectly fine -- they will be resolved at
+  # import time.
+
+  target_link_libraries(carbon_py PRIVATE "-undefined dynamic_lookup")
+
+  if(ARG_SHARED)
+    # Suppress CMake >= 3.0 warning for shared libraries
+    set_target_properties(carbon_py PROPERTIES MACOSX_RPATH ON)
+  endif()
+endif()
+
 
 set_target_properties(carbon_py PROPERTIES PREFIX "")
 set_target_properties(carbon_py PROPERTIES OUTPUT_NAME "_carbon")
@@ -290,10 +303,6 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy  ${CMAKE_CURRENT_SOURCE_DIR}/carbon.py ${CMAKE_CURRENT_BINARY_DIR}/carbon.py
   )
 
-#target_link_libraries(carbon_shared
-#  Python::Python
-#  )
-#
 
 #add_library(carbon ALIAS carbon_shared)
 add_library(Carbon::Carbon ALIAS carbon_static)
