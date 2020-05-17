@@ -187,25 +187,23 @@ set_property(TARGET carbon_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 
 # shared and static libraries built from the same object files
-add_library(carbon_shared SHARED
-  $<TARGET_OBJECTS:carbon_obj>
-  carbon.cpp
-  )
+#add_library(carbon_shared SHARED
+#  $<TARGET_OBJECTS:carbon_obj>
+#  carbon.cpp
+#  )
 
-set_target_properties(carbon_shared PROPERTIES
-  CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1
-  )
-
-
-set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME carbon)
-
-target_include_directories(carbon_shared PUBLIC
-  ${PROJECT_BINARY_DIR}/include
-  ${PROJECT_SOURCE_DIR}/include
-)
+#set_target_properties(carbon_shared PROPERTIES
+#  CXX_VISIBILITY_PRESET hidden
+#  VISIBILITY_INLINES_HIDDEN 1
+#  )
 
 
+#set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME carbon)
+
+#target_include_directories(carbon_shared PUBLIC
+#  ${PROJECT_BINARY_DIR}/include
+#  ${PROJECT_SOURCE_DIR}/include
+#)
 
 
 add_library(carbon_static STATIC
@@ -292,12 +290,12 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy  ${CMAKE_CURRENT_SOURCE_DIR}/carbon.py ${CMAKE_CURRENT_BINARY_DIR}/carbon.py
   )
 
-target_link_libraries(carbon_shared
-  Python::Python
-  )
+#target_link_libraries(carbon_shared
+#  Python::Python
+#  )
+#
 
-
-add_library(carbon ALIAS carbon_shared)
-add_library(Carbon::Carbon ALIAS carbon_shared)
+#add_library(carbon ALIAS carbon_shared)
+add_library(Carbon::Carbon ALIAS carbon_static)
 add_library(Carbon::Static ALIAS carbon_static)
-add_library(Carbon::Shared ALIAS carbon_shared)
+#add_library(Carbon::Shared ALIAS carbon_shared)
