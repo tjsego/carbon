@@ -36,6 +36,11 @@ set (_PUBLIC_HEADERS
   c_listwrap.h
   c_event.h
   c_error.h
+  c_compartment.h
+  c_kineticlaw.h
+  c_reaction.h
+  c_species.h
+  c_speciesreference.h
   )
 
 message("_PUBLIC_HEADERS: ${_PUBLIC_HEADERS}")

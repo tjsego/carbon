@@ -11,6 +11,13 @@ set(SRC
   CListWrap.cpp
   CEvent.cpp
   CError.cpp
+
+  c_compartment.cpp
+  c_kineticlaw.cpp
+  c_reaction.cpp
+  c_species.cpp
+  c_speciesreference.cpp
+
 #  c_error.cpp
 #  c_moduledef.cpp
 #  c_callable.cpp

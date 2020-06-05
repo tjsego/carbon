@@ -8,8 +8,8 @@
 #ifndef INCLUDE_MX_EXPRESSION_H_
 #define INCLUDE_MX_EXPRESSION_H_
 
-#include "carbon.h"
-#include "mx_symbol.h"
+#include <c_port.h>
+#include <c_symbol.h>
 
 #ifdef __cplusplus
 extern "C"

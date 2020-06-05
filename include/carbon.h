@@ -16,6 +16,11 @@
 #include <c_descrobject.h>
 #include <c_listwrap.h>
 #include <c_error.h>
+#include <c_compartment.h>
+#include <c_kineticlaw.h>
+#include <c_reaction.h>
+#include <c_species.h>
+#include <c_speciesreference.h>
 
 #ifdef __cplusplus
 #include <c_object.hpp>
