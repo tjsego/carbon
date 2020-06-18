@@ -156,7 +156,7 @@ target_include_directories(carbon_static PUBLIC
 
 #########################################################
 
-add_library(carbon_shared STATIC
+add_library(carbon_shared SHARED
   $<TARGET_OBJECTS:carbon_obj>
   carbon.cpp
   )
@@ -173,6 +173,8 @@ target_include_directories(carbon_shared PUBLIC
   ${Python_INCLUDE_DIRS}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
   )
+
+set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
 
 
 #################################################################
