@@ -88,6 +88,32 @@ CAPI_STRUCT(CObject);
             Mx_DECREF(_py_xdecref_tmp);               \
     } while (0)
 
+
+#ifdef Py_TRACE_REFS
+/* Define pointers to support a doubly-linked list of all live heap objects. */
+//#define _PyObject_HEAD_EXTRA            \
+//    struct _object *_ob_next;           \
+//    struct _object *_ob_prev;
+
+#define _CObject_EXTRA_INIT ._ob_next = 0, ._ob_prev = 0,
+
+#else
+//#define _PyObject_HEAD_EXTRA
+#define _CObject_EXTRA_INIT
+#endif
+
+#ifndef CObject_HEAD_INIT
+#define CObject_HEAD_INIT(type)        \
+    .ob_base = { _CObject_EXTRA_INIT              \
+      .ob_refcnt = 1, .ob_type = type },
+#endif
+
+#ifndef CVarObject_HEAD_INIT
+#define CVarObject_HEAD_INIT(type, size)       \
+    .ob_base = { CObject_HEAD_INIT(type) .ob_size = size },
+
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {

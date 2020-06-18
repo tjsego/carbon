@@ -109,11 +109,11 @@ typedef uint8_t bool;
 #endif
 
 #ifndef CAPI_DATA
-//#  ifdef __cplusplus
-//#    define CAPI_DATA(RTYPE) extern "C" RTYPE
-//#  else
+#ifdef _WIN32
+#    define CAPI_DATA(RTYPE) extern "C" CAPI_EXPORT RTYPE
+#else
 #    define CAPI_DATA(RTYPE) extern RTYPE CAPI_EXPORT
-//#  endif
+#endif
 #endif
 
 #ifndef MxMODINIT_FUNC

@@ -1,4 +1,13 @@
+# need 3.12 for FindPython support
 cmake_minimum_required(VERSION 3.14)
+
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    CACHE STRING "")
+    message(" [INFO] VCPKG CMAKE_TOOLCHAIN_FILE = ${CMAKE_TOOLCHAIN_FILE}")
+endif()
+
+message("VCPKG CMAKE_TOOLCHAIN_FILE = ${CMAKE_TOOLCHAIN_FILE}")
 
 project(Carbon)
 
@@ -34,7 +43,13 @@ if(MX_APPLE AND DEFINED CMAKE_ECLIPSE_VERSION)
 endif()
 
 # using magnum, so whole project needs C++11
-set(CMAKE_CXX_STANDARD 11)
+
+
+if(WIN32)
+  add_compile_options("/std:c++latest")
+else()
+  set(CMAKE_CXX_STANDARD 11)
+endif()
 
 
 message("CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
@@ -47,6 +62,10 @@ message("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 message("CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
 
 find_package (Python 3.5 REQUIRED COMPONENTS Development)
+
+if(WIN32)
+#  add_definitions("-DMS_NO_COREDLL")
+endif()
 
 message("Python_FOUND: ${Python_FOUND}")
 message("Python_Interpeter_FOUND: ${Python_Interpeter_FOUND}")
@@ -72,17 +91,6 @@ if(MX_APPLE AND DEFINED CMAKE_ECLIPSE_VERSION)
   message("setting eclipse include dirs: ${Python_INCLUDE_DIRS}")
   include_directories(${Python_INCLUDE_DIRS})
 endif()
-
-
-find_package(NumPy)
-message("NUMPY_FOUND: ${NUMPY_FOUND}") # - was NumPy found
-message("NUMPY_VERSION: ${NUMPY_VERSION}") # - the version of NumPy found as a string
-message("NUMPY_VERSION_MAJOR: ${NUMPY_VERSION_MAJOR}") # - the major version number of NumPy
-message("NUMPY_VERSION_MINOR: ${NUMPY_VERSION_MINOR}") # - the minor version number of NumPy
-message("NUMPY_VERSION_PATCH: ${NUMPY_VERSION_PATCH}") # - the patch version number of NumPy
-message("NUMPY_VERSION_DECIMAL: ${NUMPY_VERSION_DECIMAL}") # - e.g. version 1.6.1 is 10601
-message("NUMPY_INCLUDE_DIR: ${NUMPY_INCLUDE_DIR}") # - path to the NumPy include files
-
 
 
 # CMake policies: enable MACOSX_RPATH by default

@@ -235,18 +235,7 @@ whose size is determined when the object is allocated.
 #define Mx_REF_DEBUG
 #endif
 
-#ifdef Mx_TRACE_REFS
-/* Define pointers to support a doubly-linked list of all live heap objects. */
-#define _CObject_HEAD_EXTRA            \
-        struct _object *_ob_next;           \
-        struct _object *_ob_prev;
 
-#define _CObject_EXTRA_INIT 0, 0,
-
-#else
-#define _CObject_HEAD_EXTRA
-#define _CObject_EXTRA_INIT
-#endif
 
 /* CObject_HEAD defines the initial segment of every CObject. */
 #define CObject_HEAD                   \
@@ -254,9 +243,6 @@ whose size is determined when the object is allocated.
         Mx_ssize_t ob_refcnt;               \
         struct _typeobject *ob_type;
 
-#define CObject_HEAD_INIT(type)        \
-        _CObject_EXTRA_INIT                \
-        1, type,
 
 #define MxVarObject_HEAD_INIT(type, size)       \
         CObject_HEAD_INIT(type) size,
@@ -281,9 +267,7 @@ whose size is determined when the object is allocated.
 //   CObject_HEAD
 //} CObject;
 
-typedef struct {
-    CObject_VAR_HEAD
-} MxVarObject;
+
 
 #define Mx_REFCNT(ob)           (((CObject*)(ob))->ob_refcnt)
 #define Mx_TYPE(ob)             (((CObject*)(ob))->ob_type)

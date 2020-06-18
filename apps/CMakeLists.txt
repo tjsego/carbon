@@ -6,5 +6,8 @@ add_executable(
 target_link_libraries(c-pyrun
   Carbon::Carbon
   Python::Python
+  ${Python_LIBRARIES}
   )
+
+
 

@@ -9,7 +9,14 @@
 #define _INCLUDED_CARBON_H_
 
 
+#ifdef DEBUG
+#undef DEBUG
 #include <Python.h>
+#define DEBUG
+#else
+#include <Python.h>
+#endif
+
 #include <c_port.h>
 #include <c_object.h>
 #include <c_type.h>

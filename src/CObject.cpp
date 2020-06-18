@@ -13,7 +13,7 @@
 #include <CObject.hpp>
 
 PyTypeObject Test_Type = {
-  PyVarObject_HEAD_INIT(NULL, 0)
+  CVarObject_HEAD_INIT(NULL, 0)
   .tp_name =           0, 
   .tp_basicsize =      0,
   .tp_itemsize =       0, 
@@ -73,7 +73,7 @@ PyTypeObject Test_Type = {
 
 
 PyTypeObject CObject_Type = {
-  PyVarObject_HEAD_INIT(NULL, 0)
+  CVarObject_HEAD_INIT(NULL, 0)
   .tp_name =           "Object", 
   .tp_basicsize =      sizeof(CObject),
   .tp_itemsize =       0, 

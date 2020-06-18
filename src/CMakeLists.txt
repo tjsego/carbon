@@ -1,9 +1,6 @@
 # LLVM compile options
 #add_definitions(${LLVM_LDFLAGS})
 
-
-message(STATUS "numpy: ${NUMPY_INCLUDE_DIR}")
-
 set(SRC
   CObject.cpp
   CType.cpp
@@ -18,31 +15,6 @@ set(SRC
   c_species.cpp
   c_speciesreference.cpp
 
-#  c_error.cpp
-#  c_moduledef.cpp
-#  c_callable.cpp
-#  c_float.cpp
-#  c_import.cpp
-#  c_port.cpp
-#  c_string.cpp
-#  c_abstract.cpp
-#  c_eval.cpp
-#  c_floatobject.cpp
-#  c_int.cpp
-#  c_number.cpp
-#  c_runtime.cpp
-#  c_ast.cpp
-#  c_expr.cpp
-#  c_function.cpp
-#  MxList.cpp
-#  MxObject.cpp
-#  c_stmt.cpp
-#  c_tupleobject.cpp
-#  CModule.cpp
-#  CType.cpp
-#  CSystem.cpp
-#  CSymbol.cpp
-#  MxExpression.cpp
   )
 
 
@@ -51,71 +23,7 @@ set(HEADERS
   CObject.hpp
   CType.hpp
   CEvent.hpp
-  # MxDebug.h
-  # carbon_llvm.h
-  # carbon_private.h
-  # MxObject.h
-  # MxMeshCore.h
-  # MxMesh.h
-  # MxPolygon.h
-  # MxModule.h
-  # MxSimulator.h
-  # MxTestCube.h
-  # MxTestParticles.h
-  # MxType.h
-  # MxTestMDCoreParticles.h
-  # MxModule.h
-  # MxModel.h
-  # MxSystem.h
-  # MxSymbol.h
-  # MxPropagator.h
-  # MxParticle.h
-  # MxCompositeParticle.h
-  # MxController.h
-  # MxView.h
-  # MxLattice.h
-  # MxLatticeCluster.h
-  # MxCell.h
-  # MxMeshRenderer.h
-  # MxMeshShaderProgram.h
-  # MeshPropagator.h
-  # MxMeshPottsPropagator.h
-  # MxExecutionContext.h
-  # MxForceFunction.h
-  # LangevinPropagator.h
-  # ScalarField.h
-  # MeshRelationships.h
-  # MeshOperations.h
-  # stochastic_rk.h
-  # MxEdge.h
-  # MxExpression.h
-  # MeshIO.h
-  # MxTesselator.h
-  # MxColumnarCell.h
-  # SymmetricEigen.h
-  # GteSymmetricEigensolver3x3.h
-  # MxConstraints.h
-  # MxForces.h
-  # MxPolygonSurfaceTensionForce.h
-  # MxPolygonAreaConstraint.h
-  # MxCellVolumeConstraint.h
-  # MxRenderTarget.h
-  # MxWindowView.h
-  # MxImageView.h
-  # ArcBallInteractor.h
-  # MxUI.h
-  # MxTestView.h
-  # MxWindowless.h
-  # MxApplication.h
-  # MxGlfwApplication.h
-  # MxWindowlessApplication.h
-  # MxSurfaceSimulator.h
-  # MxImageConverters.h
-  # MxCylinderModel.h
-  # MxUniverse.h
   )
-
-
 
 
 # For development, for the time being, we won't build the object library
@@ -157,7 +65,7 @@ set_target_properties(carbon_obj PROPERTIES
   VISIBILITY_INLINES_HIDDEN 1
   )
 
-target_compile_features(carbon_obj PUBLIC cxx_std_17)
+
 
 # set_target_properties(carbon PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
@@ -166,16 +74,12 @@ target_include_directories(carbon_obj PUBLIC
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  ${PYTHON_INCLUDE_DIRS}
-  #${NUMPY_INCLUDE_DIR}
-  #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
+  ${Python_INCLUDE_DIRS}
 )
 
 source_group("Public Header Files" FILES ${CARBON_PUBLIC_HEADERS})
 
-#message("CARBON_PUBLIC_HEADERS: ${CARBON_PUBLIC_HEADERS}")
-
-#message("CARBON_SRC: ${SRC}")
+message("added python include: ${Python_INCLUDE_DIRS}")
 
 
 # Link against LLVM libraries
@@ -187,47 +91,6 @@ source_group("Public Header Files" FILES ${CARBON_PUBLIC_HEADERS})
 set_property(TARGET carbon_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 
-# shared and static libraries built from the same object files
-#add_library(carbon_shared SHARED
-#  $<TARGET_OBJECTS:carbon_obj>
-#  carbon.cpp
-#  )
-
-#set_target_properties(carbon_shared PROPERTIES
-#  CXX_VISIBILITY_PRESET hidden
-#  VISIBILITY_INLINES_HIDDEN 1
-#  )
-
-
-#set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME carbon)
-
-#target_include_directories(carbon_shared PUBLIC
-#  ${PROJECT_BINARY_DIR}/include
-#  ${PROJECT_SOURCE_DIR}/include
-#)
-
-
-add_library(carbon_static STATIC
-  $<TARGET_OBJECTS:carbon_obj>
-  carbon.cpp
-  )
-
-set_target_properties(carbon_static PROPERTIES
-  CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1
-  )
-
-
-set_target_properties(carbon_static PROPERTIES OUTPUT_NAME carbon)
-
-target_include_directories(carbon_static PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  ${PYTHON_INCLUDE_DIRS}
-  #${NUMPY_INCLUDE_DIR}
-  #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-  )
 
 # shared and static libraries built from the same object files
 add_library(carbon_py SHARED
@@ -240,20 +103,53 @@ set_target_properties(carbon_py PROPERTIES
   VISIBILITY_INLINES_HIDDEN 1
   )
 
-
 target_include_directories(carbon_py PRIVATE
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  ${PYTHON_INCLUDE_DIRS}
-  #${NUMPY_INCLUDE_DIR}
+  ${Python_INCLUDE_DIRS}
+  #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
+  )
+
+set_target_properties(carbon_py PROPERTIES PREFIX "")
+set_target_properties(carbon_py PROPERTIES OUTPUT_NAME "_carbon")
+
+if(WIN32)
+  set_target_properties(carbon_py PROPERTIES SUFFIX ".dll")
+else()
+  set_target_properties(carbon_py PROPERTIES SUFFIX ".so")
+endif()
+
+
+##########################################################################
+
+# shared and static libraries built from the same object files
+add_library(carbon_static STATIC
+  $<TARGET_OBJECTS:carbon_obj>
+  carbon.cpp
+  )
+
+set_target_properties(carbon_static PROPERTIES
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN 1
+  )
+
+target_include_directories(carbon_static PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  ${Python_INCLUDE_DIRS}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
   )
 
 
+
+
 if(WIN32 OR CYGWIN)
   # Link against the Python shared library on Windows
-  target_link_libraries(carbon_py PRIVATE ${PYTHON_LIBRARIES})
+  target_link_libraries(carbon_py PRIVATE Python::Python)
+  target_link_libraries(carbon_static PRIVATE Python::Python)
+  
 
 elseif(APPLE)
   # It's quite common to have multiple copies of the same Python version
@@ -278,10 +174,6 @@ elseif(APPLE)
   endif()
 endif()
 
-
-set_target_properties(carbon_py PROPERTIES PREFIX "")
-set_target_properties(carbon_py PROPERTIES OUTPUT_NAME "_carbon")
-set_target_properties(carbon_py PROPERTIES SUFFIX ".so")
 
 
 #add_custom_command(
@@ -313,5 +205,5 @@ add_custom_command(
 
 #add_library(carbon ALIAS carbon_shared)
 add_library(Carbon::Carbon ALIAS carbon_static)
-add_library(Carbon::Static ALIAS carbon_static)
+#add_library(Carbon::Static ALIAS carbon_static)
 #add_library(Carbon::Shared ALIAS carbon_shared)

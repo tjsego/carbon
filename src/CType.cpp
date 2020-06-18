@@ -14,7 +14,7 @@ static_assert(offsetof(CType, tp_finalize) == offsetof(PyTypeObject, tp_finalize
 
 
 PyTypeObject CType_Type = {
-  PyVarObject_HEAD_INIT(NULL, 0)
+  CVarObject_HEAD_INIT(NULL, 0)
   .tp_name = "Type",
   .tp_basicsize = sizeof(CType),
   .tp_itemsize =       0, 

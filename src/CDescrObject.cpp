@@ -274,8 +274,9 @@ static PyObject *
 descr_reduce(CDescrObject *descr)
 {
     _Py_IDENTIFIER(getattr);
-    return Py_BuildValue("N(OO)", _PyEval_GetBuiltinId(&PyId_getattr),
-                         PyDescr_TYPE(descr), PyDescr_NAME(descr));
+    //return Py_BuildValue("N(OO)", _PyEval_GetBuiltinId(&PyId_getattr),
+    //                     PyDescr_TYPE(descr), PyDescr_NAME(descr));
+    return NULL;
 }
 
 static PyMethodDef descr_methods[] = {

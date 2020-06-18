@@ -71,7 +71,7 @@ PySequenceMethods sequence = {
 };
 
 PyTypeObject CListWrap_Type = {
-  PyVarObject_HEAD_INIT(NULL, 0)
+  CVarObject_HEAD_INIT(NULL, 0)
   .tp_name =           "ListWrap",
   .tp_basicsize =      sizeof(CListWrap),
   .tp_itemsize =       0,
