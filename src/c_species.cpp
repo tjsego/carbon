@@ -5,7 +5,7 @@
  *      Author: andy
  */
 
-#include <c_species.h>
+#include <c_species.hpp>
 
 CSpecies_t *CSpecies_create(unsigned int level,
         unsigned int version)

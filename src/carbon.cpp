@@ -7,6 +7,9 @@
  *      Author: andy
  */
 
+
+#include <carbon.hpp>
+
 // only source module that calls import_array()
 #define MX_IMPORTING_NUMPY_ARRAY
 

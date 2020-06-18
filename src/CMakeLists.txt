@@ -9,12 +9,13 @@ set(SRC
   CEvent.cpp
   CError.cpp
 
+  c_model.cpp
   c_compartment.cpp
   c_kineticlaw.cpp
   c_reaction.cpp
   c_species.cpp
   c_speciesreference.cpp
-
+  c_list.cpp
   )
 
 
@@ -23,6 +24,17 @@ set(HEADERS
   CObject.hpp
   CType.hpp
   CEvent.hpp
+
+  c_compartment.hpp
+  c_species.hpp
+  c_kineticlaw.hpp
+  c_speciesreference.hpp
+  CSymbol.hpp
+  c_model.hpp
+  carbon.hpp
+  CType.hpp
+  c_reaction.hpp
+  c_list.hpp
   )
 
 

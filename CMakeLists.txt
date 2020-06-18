@@ -102,6 +102,7 @@ if(POLICY CMP0028)
     cmake_policy(SET CMP0028 NEW)
 endif()
 
+add_subdirectory(extern)
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(apps)
