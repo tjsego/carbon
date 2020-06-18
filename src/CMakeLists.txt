@@ -142,14 +142,35 @@ target_include_directories(carbon_static PUBLIC
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
   )
 
+#########################################################
 
+add_library(carbon_shared STATIC
+  $<TARGET_OBJECTS:carbon_obj>
+  carbon.cpp
+  )
+
+set_target_properties(carbon_shared PROPERTIES
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN 1
+  )
+
+target_include_directories(carbon_shared PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  ${Python_INCLUDE_DIRS}
+  #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
+  )
+
+
+#################################################################
 
 
 if(WIN32 OR CYGWIN)
   # Link against the Python shared library on Windows
   target_link_libraries(carbon_py PRIVATE Python::Python)
   target_link_libraries(carbon_static PRIVATE Python::Python)
-  
+  target_link_libraries(carbon_shared PRIVATE Python::Python)
 
 elseif(APPLE)
   # It's quite common to have multiple copies of the same Python version
@@ -203,7 +224,7 @@ add_custom_command(
   )
 
 
-#add_library(carbon ALIAS carbon_shared)
+add_library(carbon ALIAS carbon_shared)
 add_library(Carbon::Carbon ALIAS carbon_static)
-#add_library(Carbon::Static ALIAS carbon_static)
-#add_library(Carbon::Shared ALIAS carbon_shared)
+add_library(Carbon::Static ALIAS carbon_static)
+add_library(Carbon::Shared ALIAS carbon_shared)
