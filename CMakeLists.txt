@@ -46,7 +46,8 @@ endif()
 
 
 if(WIN32)
-  add_compile_options("/std:c++latest")
+  set(CMAKE_CXX_STANDARD 14)
+  #add_compile_options("/std:c++latest")
 else()
   set(CMAKE_CXX_STANDARD 11)
 endif()

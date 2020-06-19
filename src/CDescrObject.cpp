@@ -236,7 +236,7 @@ static PyObject *
 calculate_qualname(CDescrObject *descr)
 {
     PyObject *type_qualname, *res;
-    _Py_IDENTIFIER(__qualname__);
+    C_IDENTIFIER(__qualname__);
 
     if (descr->d_name == NULL || !PyUnicode_Check(descr->d_name)) {
         PyErr_SetString(PyExc_TypeError,
@@ -273,7 +273,7 @@ descr_get_qualname(CDescrObject *descr, void *Py_UNUSED(ignored))
 static PyObject *
 descr_reduce(CDescrObject *descr)
 {
-    _Py_IDENTIFIER(getattr);
+    C_IDENTIFIER(getattr);
     //return Py_BuildValue("N(OO)", _PyEval_GetBuiltinId(&PyId_getattr),
     //                     PyDescr_TYPE(descr), PyDescr_NAME(descr));
     return NULL;

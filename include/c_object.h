@@ -89,13 +89,17 @@ CAPI_STRUCT(CObject);
     } while (0)
 
 
+#define C_static_string_init(value) { NULL, value, NULL }
+#define C_static_string(varname, value)  static _Py_Identifier varname = C_static_string_init(value)
+#define C_IDENTIFIER(varname) C_static_string(PyId_##varname, #varname)
+
 #ifdef Py_TRACE_REFS
 /* Define pointers to support a doubly-linked list of all live heap objects. */
 //#define _PyObject_HEAD_EXTRA            \
 //    struct _object *_ob_next;           \
 //    struct _object *_ob_prev;
 
-#define _CObject_EXTRA_INIT ._ob_next = 0, ._ob_prev = 0,
+#define _CObject_EXTRA_INIT 0, 0,
 
 #else
 //#define _PyObject_HEAD_EXTRA
@@ -104,13 +108,13 @@ CAPI_STRUCT(CObject);
 
 #ifndef CObject_HEAD_INIT
 #define CObject_HEAD_INIT(type)        \
-    .ob_base = { _CObject_EXTRA_INIT              \
-      .ob_refcnt = 1, .ob_type = type },
+     { _CObject_EXTRA_INIT              \
+       1,  type },
 #endif
 
 #ifndef CVarObject_HEAD_INIT
 #define CVarObject_HEAD_INIT(type, size)       \
-    .ob_base = { CObject_HEAD_INIT(type) .ob_size = size },
+    { CObject_HEAD_INIT(type) size },
 
 #endif
 
