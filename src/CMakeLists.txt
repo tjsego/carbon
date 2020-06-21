@@ -202,6 +202,7 @@ elseif(APPLE)
   # import time.
 
   target_link_libraries(carbon_py PRIVATE "-undefined dynamic_lookup")
+  target_link_libraries(carbon_shared PRIVATE "-undefined dynamic_lookup")
 
   if(ARG_SHARED)
     # Suppress CMake >= 3.0 warning for shared libraries
