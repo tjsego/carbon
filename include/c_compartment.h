@@ -13,8 +13,8 @@
 #include <c_port.h>
 
 CAPI_STRUCT(CCompartment_t);
-CAPI_STRUCT(UnitDefinition_t);
-CAPI_STRUCT(ListOf_t);
+CAPI_STRUCT(CUnitDefinition_t);
+CAPI_STRUCT(CList);
 
 /* ----------------------------------------------------------------------------
  * See the .cpp file for the documentation of the following functions.
@@ -42,7 +42,7 @@ CAPI_FUNC(CCompartment_t *) CCompartment_createWithLevelVersionAndNamespaces (un
  *
  * @memberof CCompartment_t
  */
-CAPI_FUNC(CCompartment_t *) CCompartment_create (unsigned int level, unsigned int version);
+CAPI_FUNC(CCompartment_t *) CCompartment_create ();
 
 
 /**
@@ -836,7 +836,7 @@ CAPI_FUNC(int) CCompartment_unsetSpatialDimensions (CCompartment_t *c);
  *
  * @memberof CCompartment_t
  */
-CAPI_FUNC(UnitDefinition_t *) CCompartment_getDerivedUnitDefinition(CCompartment_t *c);
+CAPI_FUNC(CUnitDefinition_t *) CCompartment_getDerivedUnitDefinition(CCompartment_t *c);
 
 
 /**
@@ -856,39 +856,6 @@ CAPI_FUNC(UnitDefinition_t *) CCompartment_getDerivedUnitDefinition(CCompartment
  */
 CAPI_FUNC(int) CCompartment_hasRequiredAttributes (CCompartment_t *c);
 
-
-/**
- * Returns the CCompartment_t structure having a given identifier.
- *
- * @param lo the list of Compartments_t structures to search.
- * @param sid the "id" attribute value being sought.
- *
- * @return item in the @p lo ListOfCompartments with the given @p sid or a
- * null pointer if no such item exists.
- *
- * @see ListOf_t
- *
- * @memberof ListOfCompartments_t
- */
-CAPI_FUNC(CCompartment_t *) ListOfCompartments_getById (ListOf_t *lo, const char *sid);
-
-
-/**
- * Removes a CCompartment_t structure based on its identifier.
- *
- * The caller owns the returned item and is responsible for deleting it.
- *
- * @param lo the list of CCompartment_t structures to search.
- * @param sid the "id" attribute value of the structure to remove.
- *
- * @return The CCompartment_t structure removed, or a null pointer if no such
- * item exists in @p lo.
- *
- * @see ListOf_t
- *
- * @memberof ListOfCompartments_t
- */
-CAPI_FUNC(CCompartment_t *) ListOfCompartments_removeById (ListOf_t *lo, const char *sid);
 
 
 #endif /* EXTERN_CARBON_INCLUDE_C_COMPARTMENT_H_ */

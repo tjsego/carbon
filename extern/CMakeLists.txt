@@ -44,5 +44,36 @@ if(WIN32)
 
 endif(WIN32)
 
+set(WITH_CPP_NAMESPACE ON CACHE BOOL
+    "Use a C++ namespace for libSBML.")
 
 add_subdirectory(libSBML-5.18.0-Source)
+
+# create an interface target for libsbml as a modern cmake target
+
+add_library(libsbml-static-interface INTERFACE)
+
+# libsbml names libs differently, why???
+if(UNIX OR CYGWIN)
+  set(LIBSBML_LIBRARY sbml)
+else()
+  if(MINGW)
+    set(LIBSBML_LIBRARY sbml)
+  else()
+    set(LIBSBML_LIBRARY libsbml)
+  endif()
+endif()
+
+target_link_libraries(libsbml-static-interface INTERFACE ${LIBSBML_LIBRARY})
+
+# libsbml writes configured headers here:
+# .//extern/carbon/extern/libSBML-5.18.0-Source/src/sbml/common/libsbml-config-common.h
+target_include_directories(libsbml-static-interface INTERFACE
+  ${CMAKE_CURRENT_BINARY_DIR}/libSBML-5.18.0-Source/src/)
+
+# lisbml source include files:
+# /Users/andy/src/radium/extern/carbon/extern/libSBML-5.18.0-Source/src/sbml
+target_include_directories(libsbml-static-interface INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/libSBML-5.18.0-Source/src/)
+
+add_library(LibSBML::LibSBML ALIAS libsbml-static-interface)

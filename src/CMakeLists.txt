@@ -78,7 +78,6 @@ set_target_properties(carbon_obj PROPERTIES
   )
 
 
-
 # set_target_properties(carbon PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # temporarily add add these includes until we get a stable public API
@@ -87,12 +86,13 @@ target_include_directories(carbon_obj PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   ${Python_INCLUDE_DIRS}
-)
+  )
+
+target_link_libraries(carbon_obj PRIVATE LibSBML::LibSBML)
 
 source_group("Public Header Files" FILES ${CARBON_PUBLIC_HEADERS})
 
 message("added python include: ${Python_INCLUDE_DIRS}")
-
 
 # Link against LLVM libraries
 #link_directories(${LLVM_LIBRARY_DIRS})
@@ -101,7 +101,6 @@ message("added python include: ${Python_INCLUDE_DIRS}")
 
 # shared libraries need PIC
 set_property(TARGET carbon_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
-
 
 
 # shared and static libraries built from the same object files
@@ -125,6 +124,10 @@ target_include_directories(carbon_py PRIVATE
 
 set_target_properties(carbon_py PROPERTIES PREFIX "")
 set_target_properties(carbon_py PROPERTIES OUTPUT_NAME "_carbon")
+
+target_link_libraries(carbon_py PRIVATE LibSBML::LibSBML)
+
+
 
 if(WIN32)
   set_target_properties(carbon_py PROPERTIES SUFFIX ".dll")
@@ -175,6 +178,8 @@ target_include_directories(carbon_shared PUBLIC
   )
 
 set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
+
+target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
 
 
 #################################################################

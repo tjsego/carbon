@@ -12,4 +12,13 @@
 #include <c_compartment.h>
 
 
+namespace libsbml{
+    class Compartment;
+}
+
+struct CCompartment_t {
+    libsbml::Compartment *sbml_obj;
+};
+
+
 #endif /* EXTERN_CARBON_SRC_C_COMPARTMENT_HPP_ */

@@ -6,11 +6,14 @@
  */
 
 #include <c_compartment.hpp>
+#include <sbml/Compartment.h>
 
-CCompartment_t * CCompartment_create(unsigned int level,
-        unsigned int version)
+CCompartment_t * CCompartment_create()
 {
-    return 0;
+    libsbml::Compartment *c = new libsbml::Compartment(2, 1);
+    CCompartment_t *result = new CCompartment_t();
+    result->sbml_obj = c;
+    return result;
 }
 
 void CCompartment_free(CCompartment_t *c)
@@ -211,25 +214,13 @@ int CCompartment_unsetSpatialDimensions(CCompartment_t *c)
     return 0;
 }
 
-UnitDefinition_t * CCompartment_getDerivedUnitDefinition(
+CUnitDefinition_t * CCompartment_getDerivedUnitDefinition(
         CCompartment_t *c)
 {
     return 0;
 }
 
 int CCompartment_hasRequiredAttributes(CCompartment_t *c)
-{
-    return 0;
-}
-
-CCompartment_t * ListOfCompartments_getById(ListOf_t *lo,
-        const char *sid)
-{
-    return 0;
-}
-
-CCompartment_t * ListOfCompartments_removeById(ListOf_t *lo,
-        const char *sid)
 {
     return 0;
 }
