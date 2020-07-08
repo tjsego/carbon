@@ -22,6 +22,16 @@
 #include <stdio.h>
 #endif
 
+
+#ifdef DEBUG
+#undef DEBUG
+#include <Python.h>
+#define DEBUG
+#else
+#include <Python.h>
+#endif
+
+
 /**
  * Mechanica is built with single precision in mind. In the future,
  * maybe there could be a need for double precision

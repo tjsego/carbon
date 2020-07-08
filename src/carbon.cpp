@@ -15,6 +15,7 @@
 
 #include "CObject.hpp"
 #include "CType.hpp"
+#include "CEvent.hpp"
 
 #include <iostream>
 
@@ -53,6 +54,8 @@ static PyObject * moduleinit(void)
     CType_init(m);
 
     CObject_init(m);
+
+    _CEvent_Init(m);
 
     if (PyType_Ready(&CMemberDescr_Type) < 0) {
         Py_FatalError("Can't initialize CMemberDescr_Type type");

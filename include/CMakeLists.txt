@@ -41,6 +41,7 @@ set (_PUBLIC_HEADERS
   c_reaction.h
   c_species.h
   c_speciesreference.h
+  c_util.h
   )
 
 message("_PUBLIC_HEADERS: ${_PUBLIC_HEADERS}")

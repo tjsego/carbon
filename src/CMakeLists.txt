@@ -16,6 +16,7 @@ set(SRC
   c_species.cpp
   c_speciesreference.cpp
   c_list.cpp
+  c_util.cpp
   )
 
 

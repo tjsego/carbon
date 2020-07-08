@@ -9,14 +9,6 @@
 #define _INCLUDED_CARBON_H_
 
 
-#ifdef DEBUG
-#undef DEBUG
-#include <Python.h>
-#define DEBUG
-#else
-#include <Python.h>
-#endif
-
 #include <c_port.h>
 #include <c_object.h>
 #include <c_type.h>
@@ -28,6 +20,8 @@
 #include <c_reaction.h>
 #include <c_species.h>
 #include <c_speciesreference.h>
+#include <c_event.h>
+#include <c_util.h>
 
 #ifdef __cplusplus
 #include <c_object.hpp>
