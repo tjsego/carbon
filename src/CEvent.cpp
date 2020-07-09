@@ -335,6 +335,7 @@ HRESULT CMulticastTimeEvent_Invoke(CMulticastTimeEvent *event, double time)
         }
     }
 
+    // TODO: check result code
     return S_OK;
 }
 
@@ -350,9 +351,11 @@ HRESULT CTimeEvent_PyFunction_Invoke(CTimeEvent *event, double time) {
 
     PyObject *t = PyFloat_FromDouble(time);
 
+    // TODO: memory leak
     PyObject *args = PyTuple_Pack(1, t);
 
     // time expired, so invoke the event.
+    // TODO: memory leak
     PyObject *result = PyObject_Call((PyObject*)event->method, args, NULL);
 
     return S_OK;
