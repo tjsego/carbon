@@ -9,6 +9,7 @@
 #define EXTERN_CARBON_INCLUDE_C_UTIL_H_
 
 #include <c_port.h>
+#include <stdint.h>
 
 /**
  * Determine if dictionary p contains key. If an item in p is matches key,
@@ -18,6 +19,11 @@
  * char* wrapper for PyDict_Contains
  */
 CAPI_FUNC(int) CDict_ContainsItemString(PyObject *p, const char *key);
+
+
+CAPI_FUNC(HRESULT) CMath_FindPrimes(uint64_t start_prime, int n, uint64_t *result);
+
+CAPI_FUNC(uint64_t) CMath_NextPrime(uint64_t start_prime);
 
 
 #ifdef __cplusplus
