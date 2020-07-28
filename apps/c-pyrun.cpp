@@ -10,9 +10,7 @@
 #include <cassert>
 #include <cstdio>
 #include <iostream>
-
-#include "Python.h"
-#include "carbon.h"
+#include <carbon.h>
 
 int main( int argc , char** argv )
 {

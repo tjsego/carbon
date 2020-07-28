@@ -131,7 +131,7 @@ target_link_libraries(carbon_py PRIVATE LibSBML::LibSBML)
 
 
 if(WIN32)
-  set_target_properties(carbon_py PROPERTIES SUFFIX ".dll")
+  set_target_properties(carbon_py PROPERTIES SUFFIX ".pyd")
 else()
   set_target_properties(carbon_py PROPERTIES SUFFIX ".so")
 endif()
@@ -165,6 +165,11 @@ add_library(carbon_shared SHARED
   carbon.cpp
   )
 
+add_library(carbon_object OBJECT
+  $<TARGET_OBJECTS:carbon_obj>
+  carbon.cpp
+  )
+
 set_target_properties(carbon_shared PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
@@ -178,6 +183,14 @@ target_include_directories(carbon_shared PUBLIC
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
   )
 
+target_include_directories(carbon_object PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  ${Python_INCLUDE_DIRS}
+  )
+
+
 set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
 
 target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
@@ -188,9 +201,18 @@ target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
 
 if(WIN32 OR CYGWIN)
   # Link against the Python shared library on Windows
-  target_link_libraries(carbon_py PRIVATE Python::Python)
-  target_link_libraries(carbon_static PRIVATE Python::Python)
-  target_link_libraries(carbon_shared PRIVATE Python::Python)
+  #target_link_libraries(carbon_py PRIVATE Python::Python)
+  #target_link_libraries(carbon_static PRIVATE Python::Python)
+  #target_link_libraries(carbon_shared PRIVATE Python::Python)
+
+
+  # weird bug with CMake / clang on windows, need to add link dir here
+  target_link_directories(carbon_py PUBLIC ${Python_LIBRARY_DIRS})
+  target_link_directories(carbon_shared PUBLIC ${Python_LIBRARY_DIRS})
+
+  # Link against the Python shared library on Windows
+  target_link_libraries(carbon_py PRIVATE ${Python_LIBRARY_RELEASE})
+  target_link_libraries(carbon_shared PRIVATE ${Python_LIBRARY_RELEASE})
 
 elseif(APPLE)
   # It's quite common to have multiple copies of the same Python version
@@ -217,6 +239,7 @@ elseif(APPLE)
 endif()
 
 
+message("CARBON_PYTHON:  ${Python_LIBRARY_RELEASE}")
 
 #add_custom_command(
 #  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/carbon.py"
@@ -249,3 +272,4 @@ add_library(carbon ALIAS carbon_shared)
 add_library(Carbon::Carbon ALIAS carbon_static)
 add_library(Carbon::Static ALIAS carbon_static)
 add_library(Carbon::Shared ALIAS carbon_shared)
+add_library(Carbon::Object ALIAS carbon_object)

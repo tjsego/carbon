@@ -9,7 +9,6 @@
 #define EXTERN_CARBON_INCLUDE_C_LISTWRAP_H_
 
 #include <c_port.h>
-#include <Python.h>
 
 typedef Py_ssize_t (*cl_lenfunc)(void*);
 

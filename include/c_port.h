@@ -23,12 +23,27 @@
 #endif
 
 
-#ifdef DEBUG
-#undef DEBUG
+ /// Include Python header, disable linking to pythonX_d.lib on Windows in debug mode
+#if defined(_MSC_VER) || defined(_WIN32)
+#  if (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION < 4)
+#    define HAVE_ROUND 1
+#  endif
+#  pragma warning(push)
+#  pragma warning(disable: 4510 4610 4512 4005)
+#  if defined(_DEBUG)
+#    define CARBON_DEBUG_MARKER
+#    undef _DEBUG
+#  endif
+#endif
+
 #include <Python.h>
-#define DEBUG
-#else
-#include <Python.h>
+
+#if defined(_MSC_VER) || defined(_WIN32)
+#  if defined(CARBON_DEBUG_MARKER)
+#    define _DEBUG
+#    undef  CARBON_DEBUG_MARKER
+#  endif
+#  pragma warning(pop)
 #endif
 
 

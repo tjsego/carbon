@@ -6,6 +6,7 @@
  */
 
 #include <cstdio>
+#include <carbon.h>
 #include <ctype.h>
 
 #ifdef CType
@@ -23,7 +24,6 @@
 
 
 #include <iostream>
-#include <Python.h>
 
 #include <sstream>
 

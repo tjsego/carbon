@@ -26,6 +26,15 @@ CAPI_FUNC(HRESULT) CMath_FindPrimes(uint64_t start_prime, int n, uint64_t *resul
 CAPI_FUNC(uint64_t) CMath_NextPrime(uint64_t start_prime);
 
 
+#ifdef _WIN32
+#define CAligned_Malloc(size,  alignment) _aligned_malloc(size,  alignment)
+#define CAligned_Free(mem) _aligned_free(mem)
+#else
+CAPI_FUNC(void*) CAligned_Malloc(size_t size, size_t alignment);
+#define CAligned_Free(mem) free(mem)
+#endif
+
+
 #ifdef __cplusplus
 
 #include <random>

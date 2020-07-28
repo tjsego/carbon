@@ -8,9 +8,8 @@
 #ifndef EXTERN_CARBON_INCLUDE_C_DESCROBJECT_H_
 #define EXTERN_CARBON_INCLUDE_C_DESCROBJECT_H_
 
-#include "Python.h"
-#include "structmember.h"
 #include <c_port.h>
+#include "structmember.h"
 
 
 

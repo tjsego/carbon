@@ -47,6 +47,9 @@ endif(WIN32)
 set(WITH_CPP_NAMESPACE ON CACHE BOOL
     "Use a C++ namespace for libSBML.")
 
+set(WITH_PYTHON OFF CACHE BOOL
+    "Generate the Python language interface for libSBML." )
+
 add_subdirectory(libSBML-5.18.0-Source)
 
 # create an interface target for libsbml as a modern cmake target

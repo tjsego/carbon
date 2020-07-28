@@ -23,19 +23,6 @@ static HRESULT timeevent_classmethod_invoke(CTimeEvent *event, double time) ;
 
 
 
-CMulticastEvent* CMulticastEvent_New()
-{
-}
-
-
-
-CTimeEvent* CTimeEvent_NewPeriod(double period, PyObject *distribution,
-        PyObject *target)
-{
-    CTimeEvent *event = NULL;
-}
-
-
 
 PyTypeObject CEvent_Type = {
   CVarObject_HEAD_INIT(NULL, 0)
@@ -339,10 +326,6 @@ HRESULT CMulticastTimeEvent_Invoke(CMulticastTimeEvent *event, double time)
     return S_OK;
 }
 
-HRESULT CTimeEvent_Invoke(CTimeEvent *event, double time)
-{
-    //return event->time_invoke(event, time);
-}
 
 HRESULT CTimeEvent_PyFunction_Invoke(CTimeEvent *event, double time) {
     if(event->next_time < time) {
