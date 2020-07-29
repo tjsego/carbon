@@ -40,7 +40,7 @@ PyObject *Carbon_ModulePtr = NULL;
 
 static PyObject * moduleinit(void)
 {
-    std::cout << MX_FUNCTION << std::endl;
+    std::cout << "Carbon, " << MX_FUNCTION << std::endl;
     PyObject *m;
 
 
