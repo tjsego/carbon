@@ -28,9 +28,31 @@ CAPI_FUNC(uint64_t) CMath_NextPrime(uint64_t start_prime);
 
 
 #ifdef _WIN32
+// windows
 #define CAligned_Malloc(size,  alignment) _aligned_malloc(size,  alignment)
 #define CAligned_Free(mem) _aligned_free(mem)
+#elif __APPLE__
+// mac
+inline void* CAligned_Malloc(size_t size, size_t alignment)
+{
+    enum {
+        void_size = sizeof(void*)
+    };
+    if (!size) {
+        return 0;
+    }
+    if (alignment < void_size) {
+        alignment = void_size;
+    }
+    void* p;
+    if (::posix_memalign(&p, alignment, size) != 0) {
+        p = 0;
+    }
+    return p;
+}
+#define CAligned_Free(mem) free(mem)
 #else
+// linux
 #define CAligned_Malloc(size,  alignment) aligned_alloc(alignment,  size)
 #define CAligned_Free(mem) free(mem)
 #endif
