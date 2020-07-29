@@ -10,6 +10,7 @@
 
 #include <c_port.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 /**
  * Determine if dictionary p contains key. If an item in p is matches key,
@@ -30,7 +31,7 @@ CAPI_FUNC(uint64_t) CMath_NextPrime(uint64_t start_prime);
 #define CAligned_Malloc(size,  alignment) _aligned_malloc(size,  alignment)
 #define CAligned_Free(mem) _aligned_free(mem)
 #else
-CAPI_FUNC(void*) CAligned_Malloc(size_t size, size_t alignment);
+#define CAligned_Malloc(size,  alignment) aligned_alloc(alignment,  size)
 #define CAligned_Free(mem) free(mem)
 #endif
 
