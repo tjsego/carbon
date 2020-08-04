@@ -10,6 +10,18 @@
 
 #include <c_port.h>
 
+/**
+ * same as python, except zero initialize.
+ */
+CAPI_FUNC(PyObject *) _CObject_New(PyTypeObject *);
+CAPI_FUNC(PyVarObject *) _CObject_NewVar(PyTypeObject *, Py_ssize_t);
+
+#define CObject_New(type, typeobj) \
+( (type *) _CObject_New(typeobj) )
+#define CObject_NewVar(type, typeobj, n) \
+( (type *) _CObject_NewVar((typeobj), (n)) )
+
+
 
 
 /**

@@ -21,6 +21,8 @@ static HRESULT timeevent_exponential_setnexttime(CTimeEvent *event, double time)
 
 static HRESULT timeevent_classmethod_invoke(CTimeEvent *event, double time) ;
 
+static HRESULT timeevent_deterministic_setnexttime(CTimeEvent *event, double time);
+
 
 
 
@@ -353,7 +355,7 @@ HRESULT CMulticastTimeEvent_Add(CMulticastTimeEvent *me, CTimeEvent *te)
 }
 
 CMulticastTimeEvent *CMulticastTimeEvent_New() {
-    CMulticastTimeEvent *result = PyObject_New(CMulticastTimeEvent, &CMulticastTimeEvent_Type);
+    CMulticastTimeEvent *result = CObject_New(CMulticastTimeEvent, &CMulticastTimeEvent_Type);
 
     std::vector<CEvent*> *events = &result->events;
 
@@ -365,7 +367,8 @@ CMulticastTimeEvent *CMulticastTimeEvent_New() {
 
 CTimeEvent* CTimeEvent_New()
 {
-    return PyObject_New(CTimeEvent, &CTimeEvent_Type);
+    CTimeEvent* result = CObject_New(CTimeEvent, &CTimeEvent_Type);
+    return result;
 }
 
 static int setdbl(double *p, PyObject *kwargs, const char* name, double defval = -1) {
@@ -454,6 +457,10 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
         event->flags |= EVENT_EXPONENTIAL;
         event->te_setnexttime = timeevent_exponential_setnexttime;
     }
+    else {
+        // no distribution, use exact time
+        event->te_setnexttime = timeevent_deterministic_setnexttime;
+    }
     
     if((event->flags & EVENT_METHODDESCR) &&
         event->target &&
@@ -482,6 +489,11 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
 HRESULT timeevent_exponential_setnexttime(CTimeEvent *event, double time) {
     std::exponential_distribution<> d(1/event->period);
     event->next_time = time + d(CRandom);
+    return S_OK;
+}
+
+HRESULT timeevent_deterministic_setnexttime(CTimeEvent *event, double time) {
+    event->next_time = time + event->period;
     return S_OK;
 }
 

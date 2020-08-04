@@ -220,3 +220,21 @@ HRESULT CObject_ChangeType(CObject* obj, const CType* type)
     obj->ob_type = const_cast<CType*>(type);
     return S_OK;
 }
+
+PyObject * _CObject_New(PyTypeObject *type) {
+    PyObject *result = _PyObject_New(type);
+    
+    if(result) {
+        size_t size = type->tp_basicsize - sizeof(PyObject);
+        void* offset = (unsigned char*)(result) + sizeof(PyObject);
+        memset(offset, 0, size);
+    }
+    
+    return result;
+}
+
+
+PyVarObject * _CObject_NewVar(PyTypeObject *, Py_ssize_t) {
+    return NULL;
+    
+}
