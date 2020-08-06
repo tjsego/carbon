@@ -116,3 +116,33 @@ HRESULT CMath_FindPrimes(uint64_t start_prime, int n, uint64_t *result)
     }
     return 0;
 }
+
+
+CAPI_FUNC(PyObject*) CIPython_Get() {
+    PyObject* moduleString = PyUnicode_FromString((char*)"IPython.core.getipython");
+    
+    if(!moduleString) {
+        return NULL;
+    }
+    
+    PyObject* module = PyImport_Import(moduleString);
+    if(!module) {
+        return NULL;
+    }
+    
+    // Then getting a reference to your function :
+
+    PyObject* get_ipython = PyObject_GetAttrString(module,(char*)"get_ipython");
+    
+    if(!get_ipython) {
+        return NULL;
+    }
+
+    PyObject* result = PyObject_CallObject(get_ipython, NULL);
+    
+    Py_DECREF(moduleString);
+    Py_DECREF(module);
+    Py_DECREF(get_ipython);
+    
+    return result;
+}

@@ -67,6 +67,12 @@ typedef std::mt19937 CRandomType;
 
 CAPI_DATA(CRandomType) CRandom;
 
+
+/**
+ * Grab the IPython object, NULL if does not exist
+ */
+CAPI_FUNC(PyObject*) CIPython_Get();
+
 #endif
 
 
