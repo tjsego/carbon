@@ -30,7 +30,10 @@ enum CEvent_Flags {
     EVENT_EXPONENTIAL           = 1 << 1,
     EVENT_METHODDESCR           = 1 << 2,
     EVENT_PYFUNC                = 1 << 3,
-    EVENT_CLASS                 = 1 << 4  // method is a class constructor
+    EVENT_CLASS                 = 1 << 4 , // method is a class constructor
+    // re-scale the time interval to the number of objects that a multi-cast
+    // event acts on. If there are many objects, time period is period / (instance count)
+    EVENT_PERIOD_RESCALE = 1 << 5
 };
 
 /**
@@ -52,6 +55,12 @@ typedef struct CEvent : PyObject {
      * pointer to method or function declaration.
      */
     PyObject *method;
+    
+    /**
+     * pointer to a method or function declaration that determines should this
+     * event fire on the object. Could also be a string, or other object.
+     */
+    PyObject *predicate;
 } CEvent;
 
 

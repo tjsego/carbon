@@ -412,6 +412,16 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
         method = PyDict_GetItemString(kwargs, "method");
     }
     
+    event->predicate = PyDict_GetItemString(kwargs, "predicate");
+    if(event->predicate) {
+        Py_INCREF(event->predicate);
+    }
+    
+    PyObject *period_rescale = PyDict_GetItemString(kwargs, "period_rescale");
+    if(period_rescale && period_rescale == Py_True) {
+        event->flags |= EVENT_PERIOD_RESCALE;
+    }
+    
     // check if method is valid
     if(method) {
         if (PyObject_IsInstance(method, (PyObject *)&PyMethodDescr_Type)) {
