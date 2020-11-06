@@ -18,6 +18,13 @@ typedef HRESULT (*event_invoke)(PyObject *);
 
 typedef HRESULT (*timeevent_invoke)(struct CTimeEvent *, double time);
 
+/**
+ * evaluates a event predicate object,
+ * returns 0 if the event should not fire, 1 if the event should, and a
+ * negative value on error.
+ */
+typedef int (*event_predicate)(struct CTimeEvent *, double time);
+
 
 enum CEvent_Kind {
     CEvent_Interval,
@@ -61,6 +68,8 @@ typedef struct CEvent : PyObject {
      * event fire on the object. Could also be a string, or other object.
      */
     PyObject *predicate;
+    
+    event_predicate check_predicate;
 } CEvent;
 
 
