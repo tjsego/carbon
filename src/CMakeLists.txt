@@ -73,6 +73,8 @@ add_library(carbon_obj
   ${HEADERS}
   )
 
+target_compile_definitions(carbon_obj PRIVATE C_BUILDING_DLL)
+
 set_target_properties(carbon_obj PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
@@ -110,6 +112,8 @@ add_library(carbon_py SHARED
   carbon.cpp
   )
 
+target_compile_definitions(carbon_py PRIVATE C_BUILDING_DLL)
+
 set_target_properties(carbon_py PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
@@ -145,6 +149,8 @@ add_library(carbon_static STATIC
   carbon.cpp
   )
 
+target_compile_definitions(carbon_static PRIVATE C_BUILDING_DLL)
+
 set_target_properties(carbon_static PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
@@ -165,10 +171,14 @@ add_library(carbon_shared SHARED
   carbon.cpp
   )
 
+target_compile_definitions(carbon_shared PRIVATE C_BUILDING_DLL)
+
 add_library(carbon_object OBJECT
   $<TARGET_OBJECTS:carbon_obj>
   carbon.cpp
   )
+
+target_compile_definitions(carbon_object PRIVATE C_BUILDING_DLL)
 
 set_target_properties(carbon_shared PROPERTIES
   CXX_VISIBILITY_PRESET hidden

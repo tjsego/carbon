@@ -120,9 +120,13 @@ typedef uint8_t bool;
 /* If no external linkage macros defined by now, create defaults */
 
 #ifdef _WIN32
-#define CAPI_EXPORT __declspec(dllexport)
+  #ifdef C_BUILDING_DLL
+    #define CAPI_EXPORT __declspec(dllexport)
+  #else
+    #define CAPI_EXPORT __declspec(dllimport)
+  #endif
 #else
-#define CAPI_EXPORT __attribute__((visibility("default")))
+  #define CAPI_EXPORT __attribute__((visibility("default")))
 #endif
 
 #ifndef CAPI_FUNC
