@@ -37,10 +37,11 @@ enum CEvent_Flags {
     EVENT_EXPONENTIAL           = 1 << 1,
     EVENT_METHODDESCR           = 1 << 2,
     EVENT_PYFUNC                = 1 << 3,
-    EVENT_CLASS                 = 1 << 4 , // method is a class constructor
+    EVENT_CLASS                 = 1 << 4, // method is a class constructor
+    EVENT_METHOD                = 1 << 5, // bound instance method
     // re-scale the time interval to the number of objects that a multi-cast
     // event acts on. If there are many objects, time period is period / (instance count)
-    EVENT_PERIOD_RESCALE = 1 << 5
+    EVENT_PERIOD_RESCALE = 1 << 6
 };
 
 /**

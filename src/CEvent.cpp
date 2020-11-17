@@ -15,13 +15,13 @@ std::default_random_engine generator;
 
 static HRESULT timeevent_func_invoke(CTimeEvent *event, double time);
 
-static HRESULT timeevent_method_invoke(CTimeEvent *event, double time);
-
 static HRESULT timeevent_exponential_setnexttime(CTimeEvent *event, double time);
 
 static HRESULT timeevent_classmethod_invoke(CTimeEvent *event, double time) ;
 
 static HRESULT timeevent_deterministic_setnexttime(CTimeEvent *event, double time);
+
+static HRESULT timeevent_bound_invoke(CTimeEvent *event, double time);
 
 
 
@@ -430,6 +430,7 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
             std::cout << "method descriptor: " << methodDesc->d_method->ml_name << std::endl;
             event->method = method;
             event->flags |= EVENT_METHODDESCR;
+            Py_IncRef(event->method);
         }
 
         else if(PyFunction_Check(method)) {
@@ -439,6 +440,7 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
             event->method = method;
             event->te_invoke = timeevent_func_invoke;
             event->flags |= EVENT_PYFUNC;
+            Py_IncRef(event->method);
         }
         else if(PyType_Check(method) && PyCallable_Check(method)) {
             const char* name = PyUnicode_AsUTF8AndSize(PyObject_Str(method), NULL);
@@ -447,6 +449,27 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
             event->te_invoke = timeevent_classmethod_invoke;
             event->flags |= EVENT_PYFUNC;
             event->flags |= EVENT_CLASS;
+            Py_IncRef(event->method);
+        }
+        else if(PyMethod_Check(method)) {
+            const char* name = PyUnicode_AsUTF8AndSize(PyObject_Str(method), NULL);
+            std::cout << "python bound method: " << name << std::endl;
+            
+            
+            PyObject* function = PyMethod_Function(method);
+            name = PyUnicode_AsUTF8AndSize(PyObject_Str(function), NULL);
+            std::cout << "function: " << name << std::endl;
+            
+            PyObject* self = PyMethod_Self(method);
+            name = PyUnicode_AsUTF8AndSize(PyObject_Str(self), NULL);
+            std::cout << "self: " << name << std::endl;
+            
+            
+            event->method = method;
+            event->te_invoke = timeevent_bound_invoke;
+            event->flags |= EVENT_PYFUNC;
+            event->flags |= EVENT_METHOD;
+            Py_IncRef(event->method);
         }
     }
 
@@ -481,6 +504,13 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
     }
     
     if((event->flags & EVENT_PYFUNC) &&
+        event->method &&
+        event->te_invoke &&
+        event->te_setnexttime) {
+        event->flags |= EVENT_ACTIVE;
+    }
+    
+    if((event->flags & EVENT_METHOD) &&
         event->method &&
         event->te_invoke &&
         event->te_setnexttime) {
@@ -526,6 +556,16 @@ HRESULT timeevent_func_invoke(CTimeEvent *event, double time) {
     // time expired, so invoke the event.
     PyObject *result = PyObject_CallObject((PyObject*)event->method, args);
     
+    if(result == NULL) {
+        std::cout << "error, " << MX_FUNCTION << ", result is null..." << std::endl;
+        PyErr_Print();
+        PyErr_Clear();
+        std::cout << std::endl;
+    }
+    
+    Py_DecRef(args);
+    Py_DecRef(result);
+    
     return S_OK;
 }
 
@@ -536,14 +576,45 @@ HRESULT timeevent_classmethod_invoke(CTimeEvent *event, double time) {
         return S_OK;
     }
     
-
-    
-    //std::cout << MX_FUNCTION << std::endl;
-    //std::cout << "args: " << PyUnicode_AsUTF8AndSize(PyObject_Str(args), NULL) << std::endl;
-    //std::cout << "method: " << PyUnicode_AsUTF8AndSize(PyObject_Str(event->method), NULL) << std::endl;
-    
     // time expired, so invoke the event.
     PyObject *result = PyObject_CallObject((PyObject*)event->method, NULL);
+    
+    if(result == NULL) {
+        std::cout << "error, " << MX_FUNCTION << ", result is null..." << std::endl;
+        PyErr_Print();
+        PyErr_Clear();
+        std::cout << std::endl;
+    }
+    
+    Py_DecRef(result);
+    
+    return S_OK;
+}
+
+// call class constructor
+HRESULT timeevent_bound_invoke(CTimeEvent *event, double time) {
+    if(event->next_time > time) {
+        return S_OK;
+    }
+    
+    // time expired, so invoke the event.
+    // Return value: Borrowed reference.
+    // Return the function object associated with the method meth.
+    PyObject* function = PyMethod_Function(event->method);
+    PyObject* self = PyMethod_Self(event->method);
+    PyObject *args = PyTuple_Pack(2, self, event);
+    
+    PyObject *result = PyObject_CallObject(function, args);
+    
+    if(result == NULL) {
+        std::cout << "error, " << MX_FUNCTION << ", result is null..." << std::endl;
+        PyErr_Print();
+        PyErr_Clear();
+        std::cout << std::endl;
+    }
+    
+    Py_DecRef(args);
+    Py_DecRef(result);
     
     return S_OK;
 }
