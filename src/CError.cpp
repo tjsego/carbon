@@ -50,6 +50,25 @@ CAPI_FUNC(HRESULT) CErr_Set(HRESULT code, const char* msg, int line,
 
 	return code;
 }
+    
+CAPI_FUNC(HRESULT) CExp_Set(const std::exception& e, const char* msg, int line, const char* file, const char* func) {
+    std::cerr << "error: " << e.what() << ", " << msg << ", " << line << ", " << func << std::endl;
+    
+    Error.err = E_FAIL;
+    Error.fname = file;
+    Error.func = func;
+    Error.msg = msg;
+    
+    ErrorPtr = &Error;
+    
+    if(CError_Opt & CERROR_SET_PYTHON_ERROR) {
+        std::stringstream ss;
+        ss << "error: " << e.what() << ", " << msg << ", " << line << ", " << func;
+        PyErr_SetString(PyExc_RuntimeError, ss.str().c_str());
+    }
+    
+    return E_FAIL;
+}
 
 
 

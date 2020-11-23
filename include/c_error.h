@@ -10,6 +10,8 @@
 
 #include "c_port.h"
 
+#include <exception>
+
 struct CError {
     HRESULT err;
     const char* msg;
@@ -27,16 +29,16 @@ enum CError_Options {
 
 #define c_error(code, msg) CErr_Set(code, msg, __LINE__, __FILE__, MX_FUNCTION)
 
+#define c_exp(e, msg) CExp_Set(e, msg, __LINE__, __FILE__, MX_FUNCTION)
 
 CAPI_FUNC(HRESULT) CErr_Set(HRESULT code, const char* msg, int line, const char* file, const char* func);
 
+CAPI_FUNC(HRESULT) CExp_Set(const std::exception&, const char* msg, int line, const char* file, const char* func);
 
 CAPI_FUNC(CError*) CErr_Occurred();
 
 
 CAPI_FUNC(void) CErr_SetOptions(uint32_t options);
-
-
 
 
 /**
