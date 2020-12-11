@@ -254,6 +254,10 @@ typedef int32_t HRESULT;
  */
 #define HRESULT_SEVERITY(hr)  (((hr) >> 31) & 0x1)
 
+#ifndef C_UNSUSED
+#define C_UNSUSED(x) (void)(x);
+#endif
+
 
 /**
  * print the function name
