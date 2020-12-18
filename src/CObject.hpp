@@ -13,7 +13,6 @@
 
 #include "carbon.h"
 
-
 /**
  * Init and add to python module
  */

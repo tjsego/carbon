@@ -17,6 +17,11 @@
 #include "CType.hpp"
 #include "CEvent.hpp"
 
+#include <CSpecies.hpp>
+#include <CSpeciesList.hpp>
+#include <CSpeciesValue.hpp>
+#include <CStateVector.hpp>
+
 #include <iostream>
 
 
@@ -61,7 +66,11 @@ static PyObject * moduleinit(void)
         Py_FatalError("Can't initialize CMemberDescr_Type type");
         return NULL;
     }
-
+    
+    _CSpecies_Init(m);
+    _CSpeciesValue_Init(m);
+    _CSpeciesList_Init(m);
+    _CStateVector_Init(m);
 
     /*
 
@@ -125,7 +134,11 @@ CAPI_FUNC(HRESULT) C_Initialize(int) {
             std::cout << "could not initialize CListWrap_Type " << std::endl;
             return E_FAIL;
         }
-
+        
+        _CSpecies_Init(Carbon_ModulePtr);
+        _CSpeciesValue_Init(Carbon_ModulePtr);
+        _CSpeciesList_Init(Carbon_ModulePtr);
+        _CStateVector_Init(Carbon_ModulePtr);
 
         /*
 
@@ -160,3 +173,5 @@ CAPI_FUNC(HRESULT) C_Finalize()
 {
     return S_OK;
 }
+
+

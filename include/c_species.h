@@ -111,7 +111,7 @@ CAPI_FUNC(void) CSpecies_initDefaults (CSpecies_t *s);
  *
  * @memberof CSpecies_t
  */
-CAPI_FUNC(const char *) CSpecies_getId (const CSpecies_t *s);
+CAPI_FUNC(PyObject*) CSpecies_getId (const CSpecies_t *s);
 
 
 /**
@@ -124,7 +124,7 @@ CAPI_FUNC(const char *) CSpecies_getId (const CSpecies_t *s);
  *
  * @memberof CSpecies_t
  */
-CAPI_FUNC(const char *) CSpecies_getName (const CSpecies_t *s);
+CAPI_FUNC(PyObject*) CSpecies_getName (const CSpecies_t *s);
 
 
 /**
@@ -533,7 +533,7 @@ CAPI_FUNC(int) CSpecies_isSetHasOnlySubstanceUnits (const CSpecies_t *s);
  *
  * @memberof CSpecies_t
  */
-CAPI_FUNC(int) CSpecies_setId (CSpecies_t *s, const char *sid);
+CAPI_FUNC(int) CSpecies_setId (CSpecies_t *s, PyObject *str);
 
 
 /**
@@ -555,7 +555,7 @@ CAPI_FUNC(int) CSpecies_setId (CSpecies_t *s, const char *sid);
  *
  * @memberof CSpecies_t
  */
-CAPI_FUNC(int) CSpecies_setName (CSpecies_t *s, const char *name);
+CAPI_FUNC(int) CSpecies_setName (CSpecies_t *s, PyObject *str);
 
 
 /**
@@ -1115,6 +1115,9 @@ CAPI_FUNC(int) CSpecies_hasRequiredAttributes (CSpecies_t *s);
  * @memberof ListOfCSpecies_t
  */
 //CAPI_FUNC(CSpecies_t *) ListOfCSpecies_removeById (ListOf_t *lo, const char *sid);
+
+
+CAPI_DATA(PyTypeObject) CSpecies_Type;
 
 
 

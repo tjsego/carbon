@@ -7,13 +7,17 @@ set(SRC
   CDescrObject.cpp
   CListWrap.cpp
   CEvent.cpp
+  CConvert.cpp
   CError.cpp
+  CSpecies.cpp
+  CSpeciesList.cpp
+  CSpeciesValue.cpp
+  CStateVector.cpp
 
   c_model.cpp
   c_compartment.cpp
   c_kineticlaw.cpp
   c_reaction.cpp
-  c_species.cpp
   c_speciesreference.cpp
   c_list.cpp
   c_util.cpp
@@ -25,9 +29,14 @@ set(HEADERS
   CObject.hpp
   CType.hpp
   CEvent.hpp
+  CConvert.hpp
+
+  CSpecies.hpp
+  CSpeciesList.hpp
+  CSpeciesValue.hpp
+  CStateVector.hpp
 
   c_compartment.hpp
-  c_species.hpp
   c_kineticlaw.hpp
   c_speciesreference.hpp
   CSymbol.hpp
@@ -163,6 +172,11 @@ target_include_directories(carbon_static PUBLIC
   ${Python_INCLUDE_DIRS}
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
   )
+
+
+
+target_link_libraries(carbon_static PRIVATE LibSBML::LibSBML)
+
 
 #########################################################
 
