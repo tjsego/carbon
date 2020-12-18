@@ -348,12 +348,14 @@ static int cspecies_init(CSpecies *self, PyObject *args, PyObject *kwargs) {
         }
         else {
             PyErr_SetString(PyExc_ValueError, "invalid species id string");
+            return -1;
         }
     }
     else {
         PyErr_SetString(PyExc_ValueError, "Species(args) must be a string");
         return -1;
     }
+    return 0;
 }
 
 static void cspecies_dealloc(CSpecies *self) {
@@ -369,7 +371,7 @@ CSpecies* CSpecies_NewFromPyArgs(PyObject *args, PyObject *kwargs) {
         return NULL;
     }
     
-    if(!cspecies_init(obj, args, kwargs)) {
+    if(cspecies_init(obj, args, kwargs) != 0) {
         Py_DECREF(obj);
         return NULL;
     }
@@ -386,11 +388,11 @@ PyGetSetDef cspecies_getsets[] = {
         .name = "id",
         .get = [](PyObject *obj, void *p) -> PyObject* {
             CSpecies *self = (CSpecies*)obj;
-            return PySpecies_getId(self->species);
+            return PySpecies_getId(self);
         },
         .set = [](PyObject *obj, PyObject *val, void *p) -> int {
             CSpecies *self = (CSpecies*)obj;
-            return PySpecies_setId(self->species, val);
+            return PySpecies_setId(self, val);
         },
         .doc = "test doc",
         .closure = NULL
@@ -399,11 +401,63 @@ PyGetSetDef cspecies_getsets[] = {
         .name = "name",
         .get = [](PyObject *obj, void *p) -> PyObject* {
             CSpecies *self = (CSpecies*)obj;
-            return PySpecies_getName(self->species);
+            return PySpecies_getName(self);
         },
         .set = [](PyObject *obj, PyObject *val, void *p) -> int {
             CSpecies *self = (CSpecies*)obj;
-            return PySpecies_setName(self->species, val);
+            return PySpecies_setName(self, val);
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "boundary",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_getBoundaryCondition(self);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_setBoundaryCondition(self, val);
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "initial_amount",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_getInitialAmount(self);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_setInitialAmount(self, val);
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "initial_concentration",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_getInitialConcentration(self);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_setInitialConcentration(self, val);
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "constant",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_getConstant(self);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_setConstant(self, val);
         },
         .doc = "test doc",
         .closure = NULL
@@ -481,8 +535,9 @@ PyTypeObject CSpecies_Type = {
 };
 
     
-PyObject* PySpecies_getId(const libsbml::Species* s)
+PyObject* PySpecies_getId(const CSpecies *cs)
 {
+    libsbml::Species *s = cs->species;
     if(s->isSetId()) {
         return carbon::cast(s->getId());
     }
@@ -491,8 +546,9 @@ PyObject* PySpecies_getId(const libsbml::Species* s)
     }
 }
 
-PyObject* PySpecies_getName(const libsbml::Species *s)
+PyObject* PySpecies_getName(const CSpecies *cs)
 {
+    libsbml::Species *s = cs->species;
     if(s->isSetName()) {
         return carbon::cast(s->getName());
     }
@@ -501,8 +557,9 @@ PyObject* PySpecies_getName(const libsbml::Species *s)
     }
 }
 
-PyObject* PySpecies_getInitialAmount(const libsbml::Species *s)
+PyObject* PySpecies_getInitialAmount(const CSpecies *cs)
 {
+    libsbml::Species *s = cs->species;
     if(s->isSetInitialAmount()) {
         return carbon::cast(s->getInitialAmount());
     }
@@ -511,8 +568,9 @@ PyObject* PySpecies_getInitialAmount(const libsbml::Species *s)
     }
 }
 
-PyObject* PySpecies_getInitialConcentration(const libsbml::Species *s)
+PyObject* PySpecies_getInitialConcentration(const CSpecies *cs)
 {
+    libsbml::Species *s = cs->species;
     if(s->isSetInitialConcentration()) {
         return carbon::cast(s->getInitialConcentration());
     }
@@ -521,8 +579,9 @@ PyObject* PySpecies_getInitialConcentration(const libsbml::Species *s)
     }
 }
 
-PyObject* PySpecies_getBoundaryCondition(const libsbml::Species *s)
+PyObject* PySpecies_getBoundaryCondition(const CSpecies *cs)
 {
+    libsbml::Species *s = cs->species;
     if(s->isSetBoundaryCondition()) {
         return carbon::cast(s->getBoundaryCondition());
     }
@@ -531,8 +590,9 @@ PyObject* PySpecies_getBoundaryCondition(const libsbml::Species *s)
     }
 }
 
-PyObject* PySpecies_getConstant(const libsbml::Species *s)
+PyObject* PySpecies_getConstant(const CSpecies *cs)
 {
+    libsbml::Species *s = cs->species;
     if(s->isSetConstant()) {
         return carbon::cast(s->getConstant());
     }
@@ -541,30 +601,40 @@ PyObject* PySpecies_getConstant(const libsbml::Species *s)
     }
 }
 
-int PySpecies_setId(libsbml::Species *s, PyObject *str)
+int PySpecies_setId(CSpecies *cs, PyObject *str)
 {
+    libsbml::Species *s = cs->species;
     return s->setId(carbon::cast<std::string>(str));
 }
 
-int PySpecies_setName(libsbml::Species *s, PyObject *str)
+int PySpecies_setName(CSpecies *cs, PyObject *str)
 {
+    libsbml::Species *s = cs->species;
     return s->setName(carbon::cast<std::string>(str));
 }
 
-int PySpecies_setInitialAmount(libsbml::Species *s, PyObject *value)
+int PySpecies_setInitialAmount(CSpecies *cs, PyObject *value)
 {
+    libsbml::Species *s = cs->species;
+    return s->setInitialAmount(carbon::cast<double>(value));
 }
 
-int PySpecies_setInitialConcentration(libsbml::Species *s, PyObject *value)
+int PySpecies_setInitialConcentration(CSpecies *cs, PyObject *value)
 {
+    libsbml::Species *s = cs->species;
+    return s->setInitialConcentration(carbon::cast<double>(value));
 }
 
-int PySpecies_setBoundaryCondition(libsbml::Species *s, PyObject *value)
+int PySpecies_setBoundaryCondition(CSpecies *cs, PyObject *value)
 {
+    libsbml::Species *s = cs->species;
+    return s->setBoundaryCondition(carbon::cast<bool>(value));
 }
 
-int PySpecies_setConstant(libsbml::Species *s, PyObject *value)
+int PySpecies_setConstant(CSpecies *cs, PyObject *value)
 {
+    libsbml::Species *s = cs->species;
+    return s->setBoundaryCondition(carbon::cast<bool>(value));
 }
 
 C_BASIC_PYTHON_TYPE_INIT(Species)

@@ -6,9 +6,20 @@
  */
 
 #include <CSpeciesValue.hpp>
+#include <CStateVector.hpp>
+#include <CSpeciesList.hpp>
+#include <sbml/Species.h>
 #include <CObject.hpp>
 #include <CConvert.hpp>
 #include <iostream>
+
+// get the libsbml species from a CSpeciesValue object
+static CSpecies *speciesvalue_species(PyObject *obj) {
+    CSpeciesValue *cv = (CSpeciesValue*)obj;
+    CStateVector *sv = cv->state_vector;
+    CSpeciesList *sl = sv->species;
+    return sl->species[cv->index];
+}
 
 /* Number implementations must check *both*
    arguments for proper type and implement the necessary conversions
@@ -17,6 +28,7 @@
 static int cspeciesvalue_init(CSpeciesValue *self, PyObject *args, PyObject *kwargs) {
     std::cout << MX_FUNCTION << std::endl;
     self->ob_fval = 123456790;
+    return 0;
 }
 
 static void cspeciesvalue_dealloc(CSpeciesValue *self) {
@@ -42,13 +54,53 @@ CSpeciesValue* CSpeciesValue_New(double value, struct CStateVector *sv, uint32_t
 
 PyGetSetDef cspeciesvalue_getsets[] = {
     {
-        .name = "position",
+        .name = "boundary",
         .get = [](PyObject *obj, void *p) -> PyObject* {
-            Py_RETURN_NONE;
-            
+            CSpecies *species = speciesvalue_species(obj);
+            return PySpecies_getBoundaryCondition(species);
         },
         .set = [](PyObject *obj, PyObject *val, void *p) -> int {
-            return 0;
+            PyErr_SetString(PyExc_Exception, "boundary is read-only");
+            return -1;
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "initial_amount",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *species = speciesvalue_species(obj);
+            return PySpecies_getInitialAmount(species);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            PyErr_SetString(PyExc_Exception, "initial_amount is read-only");
+            return -1;
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "initial_concentration",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *species = speciesvalue_species(obj);
+            return PySpecies_getInitialConcentration(species);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            PyErr_SetString(PyExc_Exception, "initial_concentration is read-only");
+            return -1;
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {
+        .name = "constant",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *species = speciesvalue_species(obj);
+            return PySpecies_getConstant(species);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            PyErr_SetString(PyExc_Exception, "constant is read-only");
+            return -1;
         },
         .doc = "test doc",
         .closure = NULL
