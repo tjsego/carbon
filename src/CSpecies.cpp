@@ -12,6 +12,7 @@
 #include <sbml/SBMLNamespaces.h>
 
 #include <iostream>
+#include <regex>
 
 
 static libsbml::SBMLNamespaces *sbmlns = NULL;
@@ -51,6 +52,7 @@ PyObject* CSpecies_getName(const CSpecies_t *s)
 {
     //lib
     //return carbon::cast(s->getNa)
+    return NULL;
 }
 
 const char* CSpecies_getSpeciesType(const CSpecies_t *s)
@@ -329,37 +331,85 @@ int CSpecies_hasRequiredAttributes(CSpecies_t *s)
 }
 
 static int cspecies_init(CSpecies *self, PyObject *args, PyObject *kwargs) {
-    std::cout << MX_FUNCTION << std::endl;
-    
+    std::string msg;
     PyObject *arg = NULL;
+    std::string s;
     
-    if(args && PyTuple_Check(args) && PyTuple_Size(args) == 1) {
-        arg = PyTuple_GetItem(args, 0);
-    }
-    else {
-        arg = args;
-    }
-    
-    if(carbon::check<std::string>(arg)) {
-        std::string s = carbon::cast<std::string>(arg);
-        if(libsbml::SyntaxChecker_isValidSBMLSId(s.c_str())) {
-            self->species = new libsbml::Species(C_GetSBMLNamespaces());
-            self->species->setId(s.c_str());
+    try {
+        
+        if(args && PyTuple_Check(args) && PyTuple_Size(args) == 1) {
+            arg = PyTuple_GetItem(args, 0);
         }
         else {
-            PyErr_SetString(PyExc_ValueError, "invalid species id string");
+            arg = args;
+        }
+        
+        if(carbon::check<std::string>(arg)) {
+            s = carbon::cast<std::string>(arg);
+            
+            static std::regex e ("\\s*(const\\s+)?(\\$)?(\\w+)(\\s+=\\s+)?([-+]?[0-9]*\\.?[0-9]+)?\\s*");
+            
+            std::smatch sm;    // same as std::match_results<string::const_iterator> sm;
+            
+            // if we have a match, it looks like this:
+            // matches for "const S1 = 234234.5"
+            // match(0):(19)"const S1 = 234234.5"
+            // match(1):(6)"const "
+            // match(2):(0)""
+            // match(3):(2)"S1"
+            // match(4):(3)" = "
+            // match(5):(8)"234234.5"
+            static const int CONST = 1;
+            static const int BOUNDARY = 2;
+            static const int ID = 3;
+            static const int EQUAL = 4;
+            static const int INIT = 5;
+            
+            if(std::regex_match (s,sm,e) && sm.size() == 6) {
+                // check if name is valid sbml id
+                if(!sm[ID].matched || !libsbml::SyntaxChecker_isValidSBMLSId(sm[ID].str().c_str())) {
+                    msg = "invalid Species id: \"" + sm[ID].str() + "\"";
+                    PyErr_SetString(PyExc_ValueError, msg.c_str());
+                    return -1;
+                }
+                
+                if(sm[INIT].matched && !sm[EQUAL].matched) {
+                    msg = "Species has initial assignemnt value without equal symbol: \"" + s + "\"";
+                    PyErr_SetString(PyExc_ValueError, msg.c_str());
+                    return -1;
+                }
+                
+                self->species = new libsbml::Species(C_GetSBMLNamespaces());
+                self->species->setId(sm[ID].str());
+                self->species->setBoundaryCondition(sm[BOUNDARY].matched);
+                self->species->setConstant(sm[CONST].matched);
+                
+                if(sm[INIT].matched) {
+                    self->species->setInitialConcentration(std::stod(sm[INIT].str()));
+                }
+                
+                return 0;
+            }
+            else {
+                std::string msg = "invalid Species string: \"" + s + "\"";
+                PyErr_SetString(PyExc_ValueError, msg.c_str());
+                return -1;
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_ValueError, "Species(args) must be a string");
             return -1;
         }
     }
-    else {
-        PyErr_SetString(PyExc_ValueError, "Species(args) must be a string");
+    catch(const std::exception &e) {
+        msg = "error creating Species(" + s + "\") : " + e.what();
+        PyErr_SetString(PyExc_ValueError, "error creating Species");
         return -1;
     }
-    return 0;
+    return -1;
 }
 
 static void cspecies_dealloc(CSpecies *self) {
-    std::cout << MX_FUNCTION << std::endl;
     delete self->species;
     self->ob_type->tp_free(self);
 }
@@ -468,6 +518,10 @@ PyGetSetDef cspecies_getsets[] = {
 
 static PyObject* species_str(CSpecies *self) {
     std::string s = "Species('";
+    if(self->species->isSetBoundaryCondition() &&
+       self->species->getBoundaryCondition()) {
+        s += "$";
+    }
     s += self->species->getId();
     s += "')";
     return carbon::cast(s);
