@@ -254,11 +254,6 @@ typedef int32_t HRESULT;
  */
 #define HRESULT_SEVERITY(hr)  (((hr) >> 31) & 0x1)
 
-#ifndef C_UNSUSED
-#define C_UNSUSED(x) (void)(x);
-#endif
-
-
 /**
  * print the function name
  */
@@ -275,6 +270,10 @@ typedef int32_t HRESULT;
 #undef inline
 
 #define MX_FUNCTION __func__
+#endif
+
+#ifndef C_UNUSED
+#define C_UNUSED(x) (void)(x);
 #endif
 
 
