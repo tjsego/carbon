@@ -683,7 +683,7 @@ CAPI_FUNC(int) CSpeciesReference_hasRequiredAttributes (CSpeciesReference_t *sr)
  *
  * @memberof ListOfSpeciesReferences_t
  */
-CAPI_FUNC(CSpeciesReference_t *) ListOfSpeciesReferences_getById (ListOf_t *lo, const char *sid);
+CAPI_FUNC(CSpeciesReference_t *) CListOfSpeciesReferences_getById (ListOf_t *lo, const char *sid);
 
 
 /**
@@ -701,7 +701,7 @@ CAPI_FUNC(CSpeciesReference_t *) ListOfSpeciesReferences_getById (ListOf_t *lo, 
  *
  * @memberof ListOfSpeciesReferences_t
  */
-CAPI_FUNC(CSpeciesReference_t *) ListOfSpeciesReferences_removeById (ListOf_t *lo, const char *sid);
+CAPI_FUNC(CSpeciesReference_t *) CListOfSpeciesReferences_removeById (ListOf_t *lo, const char *sid);
 
 
 

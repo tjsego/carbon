@@ -359,7 +359,7 @@ static int cspecies_init(CSpecies *self, PyObject *args, PyObject *kwargs) {
             // match(3):(2)"S1"
             // match(4):(3)" = "
             // match(5):(8)"234234.5"
-            static const int CONST = 1;
+            static const int CNST = 1;  // Windows complains if name is CONST
             static const int BOUNDARY = 2;
             static const int ID = 3;
             static const int EQUAL = 4;
@@ -382,7 +382,7 @@ static int cspecies_init(CSpecies *self, PyObject *args, PyObject *kwargs) {
                 self->species = new libsbml::Species(C_GetSBMLNamespaces());
                 self->species->setId(sm[ID].str());
                 self->species->setBoundaryCondition(sm[BOUNDARY].matched);
-                self->species->setConstant(sm[CONST].matched);
+                self->species->setConstant(sm[CNST].matched);
                 
                 if(sm[INIT].matched) {
                     self->species->setInitialConcentration(std::stod(sm[INIT].str()));

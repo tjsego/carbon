@@ -181,13 +181,13 @@ int CSpeciesReference_hasRequiredAttributes(CSpeciesReference_t *sr)
     return 0;
 }
 
-CSpeciesReference_t * ListOfSpeciesReferences_getById(ListOf_t *lo,
+CSpeciesReference_t * CListOfSpeciesReferences_getById(ListOf_t *lo,
         const char *sid)
 {
     return 0;
 }
 
-CSpeciesReference_t * ListOfSpeciesReferences_removeById(
+CSpeciesReference_t * CListOfSpeciesReferences_removeById(
         ListOf_t *lo, const char *sid)
 {
     return 0;

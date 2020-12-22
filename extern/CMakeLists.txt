@@ -67,7 +67,9 @@ else()
   endif()
 endif()
 
-target_link_libraries(libsbml-static-interface INTERFACE ${LIBSBML_LIBRARY})
+target_link_libraries(libsbml-static-interface INTERFACE ${LIBSBML_LIBRARY}-static)
+
+target_compile_definitions(libsbml-static-interface INTERFACE LIBSBML_STATIC)
 
 # libsbml writes configured headers here:
 # .//extern/carbon/extern/libSBML-5.18.0-Source/src/sbml/common/libsbml-config-common.h

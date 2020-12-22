@@ -774,7 +774,7 @@ CAPI_FUNC(SpeciesReference_t *) CReaction_removeModifierBySpecies (CReaction_t *
  *
  * @memberof ListOfReactions_t
  */
-CAPI_FUNC(CReaction_t *) ListOfReactions_getById (ListOf_t *lo, const char *sid);
+CAPI_FUNC(CReaction_t *) CListOfReactions_getById (ListOf_t *lo, const char *sid);
 
 
 /**
@@ -792,7 +792,7 @@ CAPI_FUNC(CReaction_t *) ListOfReactions_getById (ListOf_t *lo, const char *sid)
  *
  * @memberof ListOfReactions_t
  */
-CAPI_FUNC(CReaction_t *) ListOfReactions_removeById (ListOf_t *lo, const char *sid);
+CAPI_FUNC(CReaction_t *) CListOfReactions_removeById (ListOf_t *lo, const char *sid);
 
 
 #endif /* EXTERN_CARBON_INCLUDE_C_REACTION_H_ */

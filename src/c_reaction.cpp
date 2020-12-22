@@ -301,12 +301,12 @@ SpeciesReference_t * CReaction_removeModifierBySpecies(
     return 0;
 }
 
-CReaction_t * ListOfReactions_getById(ListOf_t *lo, const char *sid)
+CReaction_t * CListOfReactions_getById(ListOf_t *lo, const char *sid)
 {
     return 0;
 }
 
-CReaction_t * ListOfReactions_removeById(ListOf_t *lo,
+CReaction_t * CListOfReactions_removeById(ListOf_t *lo,
         const char *sid)
 {
     return 0;
