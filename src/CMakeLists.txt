@@ -115,39 +115,13 @@ message("added python include: ${Python_INCLUDE_DIRS}")
 set_property(TARGET carbon_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 
-# shared and static libraries built from the same object files
-add_library(carbon_py SHARED
+add_library(carbon_object OBJECT
   $<TARGET_OBJECTS:carbon_obj>
   carbon.cpp
   )
 
-target_compile_definitions(carbon_py PRIVATE C_BUILDING_DLL)
+target_compile_definitions(carbon_object PRIVATE C_BUILDING_DLL)
 
-set_target_properties(carbon_py PROPERTIES
-  CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1
-  )
-
-target_include_directories(carbon_py PRIVATE
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  ${Python_INCLUDE_DIRS}
-  #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-  )
-
-set_target_properties(carbon_py PROPERTIES PREFIX "")
-set_target_properties(carbon_py PROPERTIES OUTPUT_NAME "_carbon")
-
-target_link_libraries(carbon_py PRIVATE LibSBML::LibSBML)
-
-
-
-if(WIN32)
-  set_target_properties(carbon_py PROPERTIES SUFFIX ".pyd")
-else()
-  set_target_properties(carbon_py PROPERTIES SUFFIX ".so")
-endif()
 
 
 ##########################################################################
@@ -180,120 +154,185 @@ target_link_libraries(carbon_static PRIVATE LibSBML::LibSBML)
 
 #########################################################
 
-add_library(carbon_shared SHARED
-  $<TARGET_OBJECTS:carbon_obj>
-  carbon.cpp
-  )
 
-target_compile_definitions(carbon_shared PRIVATE C_BUILDING_DLL)
+if(CARBON_SHARED)
 
-add_library(carbon_object OBJECT
-  $<TARGET_OBJECTS:carbon_obj>
-  carbon.cpp
-  )
+  add_library(carbon_shared SHARED
+    $<TARGET_OBJECTS:carbon_obj>
+    carbon.cpp
+    )
 
-target_compile_definitions(carbon_object PRIVATE C_BUILDING_DLL)
-
-set_target_properties(carbon_shared PROPERTIES
-  CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1
-  )
-
-target_include_directories(carbon_shared PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  ${Python_INCLUDE_DIRS}
-  #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-  )
-
-target_include_directories(carbon_object PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  ${Python_INCLUDE_DIRS}
-  )
+  target_compile_definitions(carbon_shared PRIVATE C_BUILDING_DLL)
 
 
-set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
+  set_target_properties(carbon_shared PROPERTIES
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN 1
+    )
 
-target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
+  target_include_directories(carbon_shared PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    ${Python_INCLUDE_DIRS}
+    #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
+    )
+
+  target_include_directories(carbon_object PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    ${Python_INCLUDE_DIRS}
+    )
+
+
+  set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
+
+  target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
+
+
+
+  if(WIN32 OR CYGWIN)
+    # Link against the Python shared library on Windows
+
+    # weird bug with CMake / clang on windows, need to add link dir here
+    target_link_directories(carbon_shared PUBLIC ${Python_LIBRARY_DIRS})
+
+    # Link against the Python shared library on Windows
+    target_link_libraries(carbon_shared PRIVATE ${Python_LIBRARY_RELEASE})
+
+  elseif(APPLE)
+    # It's quite common to have multiple copies of the same Python version
+    # installed on one's system. E.g.: one copy from the OS and another copy
+    # that's statically linked into an application like Blender or Maya.
+    # If we link our plugin library against the OS Python here and import it
+    # into Blender or Maya later on, this will cause segfaults when multiple
+    # conflicting Python instances are active at the same time (even when they
+    # are of the same version).
+
+    # Windows is not affected by this issue since it handles DLL imports
+    # differently. The solution for Linux and Mac OS is simple: we just don't
+    # link against the Python library. The resulting shared library will have
+    # missing symbols, but that's perfectly fine -- they will be resolved at
+    # import time.
+
+    target_link_libraries(carbon_shared PRIVATE "-undefined dynamic_lookup")
+
+  endif()
+
+  add_library(carbon ALIAS carbon_shared)
+  add_library(Carbon::Shared ALIAS carbon_shared)
+
+endif()
 
 
 #################################################################
 
 
-if(WIN32 OR CYGWIN)
-  # Link against the Python shared library on Windows
-  #target_link_libraries(carbon_py PRIVATE Python::Python)
-  #target_link_libraries(carbon_static PRIVATE Python::Python)
-  #target_link_libraries(carbon_shared PRIVATE Python::Python)
+if(CARBON_PY)
+
+  # shared and static libraries built from the same object files
+  add_library(carbon_py SHARED
+    $<TARGET_OBJECTS:carbon_obj>
+    carbon.cpp
+    )
+
+  target_compile_definitions(carbon_py PRIVATE C_BUILDING_DLL)
+
+  set_target_properties(carbon_py PROPERTIES
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN 1
+    )
+
+  target_include_directories(carbon_py PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    ${Python_INCLUDE_DIRS}
+    #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
+    )
+
+  set_target_properties(carbon_py PROPERTIES PREFIX "")
+  set_target_properties(carbon_py PROPERTIES OUTPUT_NAME "_carbon")
+
+  target_link_libraries(carbon_py PRIVATE LibSBML::LibSBML)
 
 
-  # weird bug with CMake / clang on windows, need to add link dir here
-  target_link_directories(carbon_py PUBLIC ${Python_LIBRARY_DIRS})
-  target_link_directories(carbon_shared PUBLIC ${Python_LIBRARY_DIRS})
 
-  # Link against the Python shared library on Windows
-  target_link_libraries(carbon_py PRIVATE ${Python_LIBRARY_RELEASE})
-  target_link_libraries(carbon_shared PRIVATE ${Python_LIBRARY_RELEASE})
-
-elseif(APPLE)
-  # It's quite common to have multiple copies of the same Python version
-  # installed on one's system. E.g.: one copy from the OS and another copy
-  # that's statically linked into an application like Blender or Maya.
-  # If we link our plugin library against the OS Python here and import it
-  # into Blender or Maya later on, this will cause segfaults when multiple
-  # conflicting Python instances are active at the same time (even when they
-  # are of the same version).
-
-  # Windows is not affected by this issue since it handles DLL imports
-  # differently. The solution for Linux and Mac OS is simple: we just don't
-  # link against the Python library. The resulting shared library will have
-  # missing symbols, but that's perfectly fine -- they will be resolved at
-  # import time.
-
-  target_link_libraries(carbon_py PRIVATE "-undefined dynamic_lookup")
-  target_link_libraries(carbon_shared PRIVATE "-undefined dynamic_lookup")
-
-  if(ARG_SHARED)
-    # Suppress CMake >= 3.0 warning for shared libraries
-    set_target_properties(carbon_py PROPERTIES MACOSX_RPATH ON)
+  if(WIN32)
+    set_target_properties(carbon_py PROPERTIES SUFFIX ".pyd")
+  else()
+    set_target_properties(carbon_py PROPERTIES SUFFIX ".so")
   endif()
+
+
+  
+
+
+  if(WIN32 OR CYGWIN)
+    # Link against the Python shared library on Windows
+
+    # weird bug with CMake / clang on windows, need to add link dir here
+    target_link_directories(carbon_py PUBLIC ${Python_LIBRARY_DIRS})
+
+    # Link against the Python shared library on Windows
+    target_link_libraries(carbon_py PRIVATE ${Python_LIBRARY_RELEASE})
+
+  elseif(APPLE)
+    # It's quite common to have multiple copies of the same Python version
+    # installed on one's system. E.g.: one copy from the OS and another copy
+    # that's statically linked into an application like Blender or Maya.
+    # If we link our plugin library against the OS Python here and import it
+    # into Blender or Maya later on, this will cause segfaults when multiple
+    # conflicting Python instances are active at the same time (even when they
+    # are of the same version).
+
+    # Windows is not affected by this issue since it handles DLL imports
+    # differently. The solution for Linux and Mac OS is simple: we just don't
+    # link against the Python library. The resulting shared library will have
+    # missing symbols, but that's perfectly fine -- they will be resolved at
+    # import time.
+
+    target_link_libraries(carbon_py PRIVATE "-undefined dynamic_lookup")
+
+    if(ARG_SHARED)
+      # Suppress CMake >= 3.0 warning for shared libraries
+      set_target_properties(carbon_py PROPERTIES MACOSX_RPATH ON)
+    endif()
+  endif()
+
+
+  message("CARBON_PYTHON:  ${Python_LIBRARY_RELEASE}")
+
+  #add_custom_command(
+  #  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/carbon.py"
+  #  POST_BUILD
+  #  COMMAND ${CMAKE_COMMAND} -E copy
+  #  ${CMAKE_CURRENT_SRC_DIR}/carbon.py
+  #  ${CMAKE_CURRENT_BINARY_DIR}/carbon.py
+  #  DEPENDS carbon.py)
+
+
+  #add_custom_command(
+  # TARGET ${destination} POST_BUILD
+  # COMMAND ${CMAKE_COMMAND} -E copy ${source} ${destination}
+  # DEPENDS ${source}
+  # COMMENT "symbolic link resources folder from ${source} => ${destination}"
+  # )
+
+  #add_custom_target(carbon.py
+  #  DEPENDS carbon.py)
+
+  add_custom_command(
+    TARGET carbon_py
+    DEPENDS carbon.py
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy  ${CMAKE_CURRENT_SOURCE_DIR}/carbon.py ${CMAKE_CURRENT_BINARY_DIR}/carbon.py
+    )
+
+
 endif()
 
-
-message("CARBON_PYTHON:  ${Python_LIBRARY_RELEASE}")
-
-#add_custom_command(
-#  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/carbon.py"
-#  POST_BUILD
-#  COMMAND ${CMAKE_COMMAND} -E copy
-#  ${CMAKE_CURRENT_SRC_DIR}/carbon.py
-#  ${CMAKE_CURRENT_BINARY_DIR}/carbon.py
-#  DEPENDS carbon.py)
-
-
-#add_custom_command(
-# TARGET ${destination} POST_BUILD
-# COMMAND ${CMAKE_COMMAND} -E copy ${source} ${destination}
-# DEPENDS ${source}
-# COMMENT "symbolic link resources folder from ${source} => ${destination}"
-# )
-
-#add_custom_target(carbon.py
-#  DEPENDS carbon.py)
-
-add_custom_command(
-  TARGET carbon_py
-  DEPENDS carbon.py
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy  ${CMAKE_CURRENT_SOURCE_DIR}/carbon.py ${CMAKE_CURRENT_BINARY_DIR}/carbon.py
-  )
-
-
-add_library(carbon ALIAS carbon_shared)
 add_library(Carbon::Carbon ALIAS carbon_static)
 add_library(Carbon::Static ALIAS carbon_static)
-add_library(Carbon::Shared ALIAS carbon_shared)
 add_library(Carbon::Object ALIAS carbon_object)
