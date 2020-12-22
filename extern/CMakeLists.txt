@@ -44,8 +44,10 @@ if(WIN32)
 
 endif(WIN32)
 
-set(WITH_CPP_NAMESPACE ON CACHE BOOL
-    "Use a C++ namespace for libSBML.")
+
+set(LIBSBML_SHARED_VERSION OFF CACHE BOOL "dont build shared libsbml")
+
+set(WITH_CPP_NAMESPACE ON CACHE BOOL "Use a C++ namespace for libSBML.")
 
 set(WITH_PYTHON OFF CACHE BOOL
     "Generate the Python language interface for libSBML." )
