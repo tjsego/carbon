@@ -82,6 +82,7 @@ add_library(carbon_obj
   ${HEADERS}
   )
 
+
 target_compile_definitions(carbon_obj PRIVATE C_BUILDING_DLL)
 
 set_target_properties(carbon_obj PROPERTIES
@@ -122,6 +123,12 @@ add_library(carbon_object OBJECT
 
 target_compile_definitions(carbon_object PRIVATE C_BUILDING_DLL)
 
+target_include_directories(carbon_object PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  ${Python_INCLUDE_DIRS}
+)
 
 
 ##########################################################################
@@ -178,18 +185,9 @@ if(CARBON_SHARED)
     #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
     )
 
-  target_include_directories(carbon_object PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    ${Python_INCLUDE_DIRS}
-    )
-
-
   set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
 
   target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
-
 
 
   if(WIN32 OR CYGWIN)

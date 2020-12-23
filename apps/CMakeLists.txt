@@ -4,10 +4,8 @@ add_executable(
   )
 
 target_link_libraries(c-pyrun
-  Carbon::Static
+  LibSBML::LibSBML 
+  Carbon::Object
   Python::Python
   ${Python_LIBRARIES}
   )
-
-
-
