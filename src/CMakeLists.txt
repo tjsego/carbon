@@ -52,10 +52,6 @@ set(HEADERS
 # because it takes longer to build if we're only building one library,
 # and won't build the py version for a while.
 
-# build all the source as a CMake 'OBJECT' lib, this gets
-# linked into the real libraries below.
-#add_library(carbon_OBJECTS OBJECT ${SRC} ${HEADERS})
-
 # get the include directories of the dependencies that the carbon objects use
 # really goofy design decision in design of CMake OBJECT libraries -- no transitive includes
 #target_include_directories(carbon_OBJECTS PRIVATE $<TARGET_PROPERTY:mdcore_single,INTERFACE_INCLUDE_DIRECTORIES>)
@@ -114,11 +110,19 @@ message("added python include: ${Python_INCLUDE_DIRS}")
 # shared libraries need PIC
 set_property(TARGET carbon_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
-
 add_library(carbon_object OBJECT
   $<TARGET_OBJECTS:carbon_obj>
   carbon.cpp
   )
+
+set_property(TARGET carbon_object PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+target_include_directories(carbon_object PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    ${Python_INCLUDE_DIRS}
+    )
 
 target_compile_definitions(carbon_object PRIVATE C_BUILDING_DLL)
 
@@ -147,10 +151,7 @@ target_include_directories(carbon_static PUBLIC
   #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
   )
 
-
-
 target_link_libraries(carbon_static PRIVATE LibSBML::LibSBML)
-
 
 #########################################################
 
@@ -178,19 +179,9 @@ if(CARBON_SHARED)
     #$<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
     )
 
-  target_include_directories(carbon_object PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    ${Python_INCLUDE_DIRS}
-    )
-
-
   set_target_properties(carbon_shared PROPERTIES OUTPUT_NAME "carbon")
 
   target_link_libraries(carbon_shared PRIVATE LibSBML::LibSBML)
-
-
 
   if(WIN32 OR CYGWIN)
     # Link against the Python shared library on Windows
