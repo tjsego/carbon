@@ -12,10 +12,31 @@
 #include <sbml/Species.h>
 #include <sstream>
 #include <iostream>
+#include <iterator>
 
 static int specieslist_init(CSpeciesList *self, PyObject *args, PyObject *kwargs) {
     std::cout << MX_FUNCTION << std::endl;
 
+}
+
+// get named attribute
+static PyObject *specieslist_getattro(CSpeciesList *self, PyObject *attr) {
+    
+    CSpecies *species = self->item(attr);
+    if(species) {
+        Py_INCREF(species);
+        return species;
+    }
+    
+    PyTypeObject *type = self->ob_type;
+    PyTypeObject *base = type->tp_base;
+    return base->tp_getattro((PyObject*)self, attr);
+}
+
+//Set the value of the named attribute for the object.
+// The value argument is set to NULL to delete the attribute.
+static int specieslist_setattro(CSpeciesList *self, PyObject *attr, PyObject *value) {
+    
 }
 
 static void specieslist_dealloc(CSpeciesList *self) {
@@ -31,12 +52,13 @@ static PyMethodDef specieslist_methods[] = {
 static PyObject* specieslist_str(CSpeciesList *self) {
     std::stringstream  ss;
     
+    
     ss << "SpeciesList([";
-    for(int i = 0; i < self->species.size(); ++i) {
-        CSpecies *s = self->species[i];
-        ss << "'" << s->species->getId() << "'";
+    for(int i = 0; i < self->size(); ++i) {
+        CSpecies *s = self->item(i);
+        ss << "'" << s->getId() << "'";
 
-        if(i+1 < self->species.size()) {
+        if(i+1 < self->size()) {
             ss << ", ";
         }
     }
@@ -47,30 +69,18 @@ static PyObject* specieslist_str(CSpeciesList *self) {
 
 // sq_length
 static Py_ssize_t specieslist_length(PyObject *_self) {
-    std::cout << MX_FUNCTION << std::endl;
     CSpeciesList *self = (CSpeciesList*)_self;
-    return self->species.size();
+    return self->size();
 }
 
-// sq_concat
-static PyObject *specieslist_concat(PyObject *, PyObject *) {
-    std::cout << MX_FUNCTION << std::endl;
-    return 0;
-}
-
-// sq_repeat
-static PyObject *specieslist_repeat(PyObject *, Py_ssize_t) {
-    std::cout << MX_FUNCTION << std::endl;
-    return 0;
-}
 
 // sq_item
-static PyObject *specieslist_item(PyObject *_self, Py_ssize_t i) {
+static PyObject *specieslist_subscript(PyObject *_self, PyObject *i) {
 
     CSpeciesList *self = (CSpeciesList*)_self;
+    CSpecies *s = self->item(i);
     
-    if(i < self->species.size()) {
-        CSpecies *s = self->species[i];
+    if(s) {
         Py_INCREF(s);
         return s;
     }
@@ -86,35 +96,13 @@ static int specieslist_ass_item(PyObject *_self, Py_ssize_t i, PyObject *o) {
     return -1;
 }
 
-// sq_contains
-static int specieslist_contains(PyObject *, PyObject *) {
-    std::cout << MX_FUNCTION << std::endl;
-    return 0;
-}
 
-// sq_inplace_concat
-static PyObject *specieslist_inplace_concat(PyObject *, PyObject *) {
-    std::cout << MX_FUNCTION << std::endl;
-    return 0;
-}
 
-// sq_inplace_repeat
-static PyObject *specieslist_inplace_repeat(PyObject *, Py_ssize_t) {
-    std::cout << MX_FUNCTION << std::endl;
-    return 0;
-}
 
-static PySequenceMethods specieslist_sequence_methods =  {
-    specieslist_length, // lenfunc sq_length;
-    specieslist_concat, // binaryfunc sq_concat;
-    specieslist_repeat, // ssizeargfunc sq_repeat;
-    specieslist_item, // ssizeargfunc sq_item;
-    0, // void *was_sq_slice;
-    specieslist_ass_item, // ssizeobjargproc sq_ass_item;
-    0, // void *was_sq_ass_slice;
-    specieslist_contains, // objobjproc sq_contains;
-    specieslist_inplace_concat, // binaryfunc sq_inplace_concat;
-    specieslist_inplace_repeat  // ssizeargfunc sq_inplace_repeat;
+static PyMappingMethods specieslist_mapping = {
+     specieslist_length,      //mp_length
+     specieslist_subscript,   //mp_subscript
+     0, //mp_ass_subscript
 };
 
 
@@ -130,12 +118,12 @@ PyTypeObject CSpeciesList_Type = {
   0                                     , // .tp_as_async
   (reprfunc)specieslist_str             , // .tp_repr
   0                                     , // .tp_as_number
-  &specieslist_sequence_methods         , // .tp_as_sequence
-  0                                     , // .tp_as_mapping
+  0                                     , // .tp_as_sequence
+  &specieslist_mapping                  , // .tp_as_mapping
   0                                     , // .tp_hash
   0                                     , // .tp_call
   (reprfunc)specieslist_str             , // .tp_str
-  0                                     , // .tp_getattro
+  (getattrofunc)specieslist_getattro    , // .tp_getattro                                     , // .tp_getattro
   0                                     , // .tp_setattro
   0                                     , // .tp_as_buffer
   Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE , // .tp_flags
@@ -188,11 +176,13 @@ CSpeciesList* CSpeciesList_NewFromPyArgs(PyObject *args) {
         return NULL;
     }
     
+    obj->init();
+    
     int size = PySequence_Size(args);
     for(int i = 0; i < size; ++i) {
         CSpecies *species = CSpecies_NewFromPyArgs(PySequence_GetItem(args, i), NULL);
         if(species) {
-            obj->species.push_back(species);
+            obj->insert(species);
         }
         else {
             // CSpecies_NewFromPyArgs sets python error if it fails
@@ -204,3 +194,96 @@ CSpeciesList* CSpeciesList_NewFromPyArgs(PyObject *args) {
 }
 
 C_BASIC_PYTHON_TYPE_INIT(SpeciesList)
+
+int32_t CSpeciesList::index_of(PyObject *species_name) const
+{
+    int32_t result = -1;
+    if(PyUnicode_Check(species_name)) {
+        PyObject * temp_bytes = PyUnicode_AsASCIIString(species_name); // Owned reference
+        if (temp_bytes != NULL) {
+            const char* str = PyBytes_AS_STRING(temp_bytes);           // Borrowed pointer
+            
+            Map::const_iterator i = species_map.find(str);
+            
+            if(i != species_map.end()) {
+                result = std::distance(species_map.begin(), i);
+            }
+            
+            Py_DECREF(temp_bytes);
+        }
+    }
+    if(PyNumber_Check(species_name)) {
+        return PyLong_AsLong(species_name);
+    }
+    return result;
+}
+
+int32_t CSpeciesList::size() const
+{
+    return species_map.size();
+}
+
+CSpecies* CSpeciesList::item(PyObject *index_or_key) const
+{
+    CSpecies *result = NULL;
+    if(PyUnicode_Check(index_or_key)) {
+        PyObject * temp_bytes = PyUnicode_AsASCIIString(index_or_key); // Owned reference
+        if (temp_bytes != NULL) {
+            const char* str = PyBytes_AS_STRING(temp_bytes);           // Borrowed pointer
+            
+            Map::const_iterator i = species_map.find(str);
+            
+            if(i != species_map.end()) {
+                result = i->second;
+            }
+            
+            Py_DECREF(temp_bytes);
+            
+            return result;
+        }
+    }
+    
+    long index = PyLong_AsLong(index_or_key);
+    
+    if(index >= 0 && index < size()) {
+        return item(index);
+    }
+    
+    // arg is probably not an integer, or maybe out of range,
+    // just clear it, and return NULL.
+    PyErr_Clear();
+    
+    return result;
+}
+
+CSpecies* CSpeciesList::item(const std::string &s) const
+{
+    Map::const_iterator i = species_map.find(s);
+    if(i != species_map.end()) {
+        return i->second;
+    }
+    return NULL;
+}
+
+
+
+CSpecies* CSpeciesList::item(int32_t index) const
+{
+    if(index < species_map.size()) {
+        Map::const_iterator i = species_map.begin();
+        i = std::next(i, index);
+        return i->second;
+    }
+    return NULL;
+}
+
+HRESULT CSpeciesList::insert(CSpecies* s)
+{
+    species_map.emplace(s->getId(), s);
+    return S_OK;
+}
+
+void CSpeciesList::init()
+{
+    new(&species_map) Map();
+}

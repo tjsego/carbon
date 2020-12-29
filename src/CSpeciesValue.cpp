@@ -18,7 +18,7 @@ static CSpecies *speciesvalue_species(PyObject *obj) {
     CSpeciesValue *cv = (CSpeciesValue*)obj;
     CStateVector *sv = cv->state_vector;
     CSpeciesList *sl = sv->species;
-    return sl->species[cv->index];
+    return sl->item(cv->index);
 }
 
 /* Number implementations must check *both*

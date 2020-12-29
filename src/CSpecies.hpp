@@ -9,6 +9,7 @@
 #define EXTERN_CARBON_SRC_C_SPECIES_HPP_
 
 #include <c_species.h>
+#include <string>
 
 namespace libsbml{
     class Species;
@@ -17,6 +18,8 @@ namespace libsbml{
 
 struct CSpecies : PyObject {
     libsbml::Species *species;
+    
+    const std::string& getId () const;
 };
 
 
@@ -38,6 +41,8 @@ PyObject* PySpecies_getBoundaryCondition (const CSpecies *s);
 
 PyObject* PySpecies_getConstant (const CSpecies *s);
 
+PyObject* PySpecies_getHasOnlySubstanceUnits (const CSpecies *s);
+
 int PySpecies_setId (CSpecies *s, PyObject *str);
 
 int PySpecies_setName (CSpecies *s, PyObject *str);
@@ -49,6 +54,8 @@ int PySpecies_setInitialConcentration (CSpecies *s, PyObject *value);
 int PySpecies_setBoundaryCondition (CSpecies *s, PyObject *value);
 
 int PySpecies_setConstant (CSpecies *s, PyObject *value);
+
+int PySpecies_setHasOnlySubstanceUnits (const CSpecies *s, PyObject *value);
 
 
 

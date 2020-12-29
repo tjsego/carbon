@@ -24,6 +24,11 @@ libsbml::SBMLNamespaces* C_GetSBMLNamespaces() {
     return sbmlns;
 }
 
+const std::string& CSpecies::getId () const
+{
+    return this->species->getId();
+}
+
 CSpecies_t *CSpecies_create(unsigned int level,
         unsigned int version)
 {
@@ -512,6 +517,19 @@ PyGetSetDef cspecies_getsets[] = {
         .doc = "test doc",
         .closure = NULL
     },
+    {
+        .name = "substance_units",
+        .get = [](PyObject *obj, void *p) -> PyObject* {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_getHasOnlySubstanceUnits(self);
+        },
+        .set = [](PyObject *obj, PyObject *val, void *p) -> int {
+            CSpecies *self = (CSpecies*)obj;
+            return PySpecies_setHasOnlySubstanceUnits(self, val);
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
     {NULL}
 };
 
@@ -526,6 +544,8 @@ static PyObject* species_str(CSpecies *self) {
     s += "')";
     return carbon::cast(s);
 }
+
+
 
 
 
@@ -689,6 +709,24 @@ int PySpecies_setConstant(CSpecies *cs, PyObject *value)
 {
     libsbml::Species *s = cs->species;
     return s->setBoundaryCondition(carbon::cast<bool>(value));
+}
+
+PyObject* PySpecies_getHasOnlySubstanceUnits(const CSpecies *cs)
+{
+    libsbml::Species *s = cs->species;
+    if(s->isSetHasOnlySubstanceUnits()) {
+        return carbon::cast(s->getHasOnlySubstanceUnits());
+    }
+    else {
+        Py_RETURN_NONE;
+    }
+    
+}
+
+int PySpecies_setHasOnlySubstanceUnits(const CSpecies *cs, PyObject *value)
+{
+    libsbml::Species *s = cs->species;
+    return s->setHasOnlySubstanceUnits(carbon::cast<bool>(value));
 }
 
 C_BASIC_PYTHON_TYPE_INIT(Species)
