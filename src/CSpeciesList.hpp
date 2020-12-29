@@ -21,6 +21,8 @@ struct CSpeciesList : PyObject
     // does not set any error.
     int32_t index_of(PyObject *species_name) const;
     
+    int32_t index_of(const char*) const;
+    
     int32_t size() const;
     
     CSpecies *item(PyObject *index_or_key) const;

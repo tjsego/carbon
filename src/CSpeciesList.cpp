@@ -212,9 +212,22 @@ int32_t CSpeciesList::index_of(PyObject *species_name) const
             Py_DECREF(temp_bytes);
         }
     }
-    if(PyNumber_Check(species_name)) {
+    else if(PyNumber_Check(species_name)) {
         return PyLong_AsLong(species_name);
     }
+    return result;
+}
+
+int32_t CSpeciesList::index_of(const char *species_name) const
+{
+    int32_t result = -1;
+    
+    Map::const_iterator i = species_map.find(species_name);
+    
+    if(i != species_map.end()) {
+        result = std::distance(species_map.begin(), i);
+    }
+    
     return result;
 }
 
