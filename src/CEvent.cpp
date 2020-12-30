@@ -365,6 +365,17 @@ CMulticastTimeEvent *CMulticastTimeEvent_New() {
     return result;
 }
 
+CMulticastEvent *CMulticastEvent_New() {
+    CMulticastEvent *result = CObject_New(CMulticastEvent, &CMulticastEvent_Type);
+    
+    std::vector<CEvent*> *events = &result->events;
+    
+    // placement new, python allocated the memory.
+    events = new(events) std::vector<CEvent*>();
+    
+    return result;
+}
+
 CTimeEvent* CTimeEvent_New()
 {
     CTimeEvent* result = CObject_New(CTimeEvent, &CTimeEvent_Type);
