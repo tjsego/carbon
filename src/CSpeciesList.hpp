@@ -9,6 +9,7 @@
 #define EXTERN_CARBON_SRC_CSpeciesList_HPP_
 
 #include <c_port.h>
+#include <string>
 #include <map>
 
 struct CSpecies;
