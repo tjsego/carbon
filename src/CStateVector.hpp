@@ -15,10 +15,15 @@ struct CStateVector : PyObject {
     uint32_t flags;
     uint32_t size;
     struct CSpeciesList *species;
+    
+    // vector of values
     union {
         float *fvec;
         double *dvec;
     };
+    
+    // vector of fluxes
+    float *q;
 };
 
 

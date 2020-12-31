@@ -52,6 +52,9 @@ static int statevector_setattro(CStateVector *self, PyObject *attr, PyObject *va
 }
 
 
+// Initial version, locally allocate block of memory for each state vec,
+// single block per vec, and q is offset at the end of the values block.
+
 CStateVector* CStateVector_New(struct CSpeciesList *species,
                                uint32_t flags, uint32_t size, void* data) {
     CStateVector* obj = (CStateVector*)PyType_GenericNew((PyTypeObject *)
@@ -59,8 +62,9 @@ CStateVector* CStateVector_New(struct CSpeciesList *species,
     obj->species = species;
     Py_INCREF(species);
     obj->size = species->size();
-    obj->fvec = (float*)malloc(obj->size *sizeof(float));
-    bzero(obj->fvec, obj->size *sizeof(float));
+    obj->fvec = (float*)malloc(2 * obj->size * sizeof(float));
+    obj->q = obj->fvec + obj->size;
+    bzero(obj->fvec, 2 * obj->size * sizeof(float));
     return obj;
 }
 
