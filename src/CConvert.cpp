@@ -150,11 +150,16 @@ std::string cast(PyObject *o) {
     }
 }
 
-
 template <>
 bool check<std::string>(PyObject *o) {
     return o && PyUnicode_Check(o);
 }
+
+template <>
+bool check<float>(PyObject *o) {
+    return o && PyNumber_Check(o);
+}
+   
 
 }
 

@@ -75,6 +75,9 @@ bool check<bool>(PyObject *o);
 template <>
 bool check<std::string>(PyObject *o);
 
+template <>
+bool check<float>(PyObject *o);
+
 
 /**
  * grab either the i'th arg from the args, or keywords.
