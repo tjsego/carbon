@@ -231,6 +231,19 @@ int32_t CSpeciesList::index_of(const char *species_name) const
     return result;
 }
 
+int32_t CSpeciesList::index_of(const std::string& s) const
+{
+    int32_t result = -1;
+    
+    Map::const_iterator i = species_map.find(s);
+    
+    if(i != species_map.end()) {
+        result = std::distance(species_map.begin(), i);
+    }
+    
+    return result;
+}
+
 int32_t CSpeciesList::size() const
 {
     return species_map.size();

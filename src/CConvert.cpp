@@ -159,7 +159,30 @@ template <>
 bool check<float>(PyObject *o) {
     return o && PyNumber_Check(o);
 }
-   
+    
+    
+std::string repr(PyObject *o) {
+    PyObject* pRepr = PyObject_Repr( o ) ;
+    
+    PyObject * str=PyUnicode_AsASCIIString(pRepr);
+    std::string result = std::string(PyBytes_AsString(str));
+    Py_DECREF(str);
+    
+    Py_DecRef( pRepr ) ;
+    return result;
+}
+
+std::string str(PyObject *o) {
+    PyObject* pStr = PyObject_Str( o ) ;
+    
+    PyObject * str=PyUnicode_AsASCIIString(pStr);
+    std::string result = std::string(PyBytes_AsString(str));
+    Py_DECREF(str);
+    
+    Py_DecRef( pStr ) ;
+    return result;
+}
+
 
 }
 

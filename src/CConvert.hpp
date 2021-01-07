@@ -85,6 +85,12 @@ bool check<float>(PyObject *o);
  * gets a reference to the object, NULL if not exist.
  */
 PyObject *arg(const char* name, int index, PyObject *_args, PyObject *_kwargs);
+    
+    /**
+     * gets the __repr__ / __str__ representations of python objects
+     */
+std::string repr(PyObject *o);
+std::string str(PyObject *o);
 
 }
 

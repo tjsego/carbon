@@ -32,7 +32,6 @@ static int cspeciesvalue_init(CSpeciesValue *self, PyObject *args, PyObject *kwa
 }
 
 static void cspeciesvalue_dealloc(CSpeciesValue *self) {
-    std::cout << MX_FUNCTION << std::endl;
     Py_DECREF(self->state_vector);
     ((PyObject*)self)->ob_type->tp_free(self);
 }

@@ -24,6 +24,8 @@ struct CSpeciesList : PyObject
     
     int32_t index_of(const char*) const;
     
+    int32_t index_of(const std::string& s) const;
+    
     int32_t size() const;
     
     CSpecies *item(PyObject *index_or_key) const;

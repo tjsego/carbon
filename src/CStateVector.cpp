@@ -51,20 +51,52 @@ static int statevector_setattro(CStateVector *self, PyObject *attr, PyObject *va
     return 0;
 }
 
+static void statevector_copy_values(CStateVector *newVec, CStateVector* oldVec) {
+    for(int i = 0; i < oldVec->species->size(); ++i) {
+        CSpecies *species = oldVec->species->item(i);
+        
+        int j = newVec->species->index_of(species->getId());
+        if(j >= 0) {
+            newVec->fvec[j] = oldVec->fvec[i];
+        }
+    }
+}
+
 
 // Initial version, locally allocate block of memory for each state vec,
 // single block per vec, and q is offset at the end of the values block.
 
 CStateVector* CStateVector_New(struct CSpeciesList *species,
-                               uint32_t flags, uint32_t size, void* data) {
+                               PyObject *owner,
+                               CStateVector *existingStateVector,
+                               uint32_t flags,
+                               uint32_t size,
+                               void* data) {
+    
     CStateVector* obj = (CStateVector*)PyType_GenericNew((PyTypeObject *)
         &CStateVector_Type, NULL, NULL);
+    
     obj->species = species;
     Py_INCREF(species);
+    
+    if(owner) {
+        obj->owner = owner;
+        Py_INCREF(owner);
+    }
+    
     obj->size = species->size();
-    obj->fvec = (float*)malloc(2 * obj->size * sizeof(float));
-    obj->q = obj->fvec + obj->size;
-    bzero(obj->fvec, 2 * obj->size * sizeof(float));
+    
+    if(!data) {
+        obj->flags |= STATEVECTOR_OWNMEMORY;
+        obj->fvec = (float*)malloc(2 * obj->size * sizeof(float));
+        obj->q = obj->fvec + obj->size;
+        bzero(obj->fvec, 2 * obj->size * sizeof(float));
+    }
+    
+    if(existingStateVector) {
+        statevector_copy_values(obj, existingStateVector);
+    }
+    
     return obj;
 }
 
@@ -86,8 +118,14 @@ static PyObject* statevector_str(CStateVector *self) {
 }
 
 static void statevector_dealloc(CStateVector *self) {
-    std::cout << MX_FUNCTION << std::endl;
-
+    if(self->flags & STATEVECTOR_OWNMEMORY) {
+        free(self->fvec);
+    }
+    
+    if(self->owner) {
+        Py_DECREF(self->owner);
+    }
+    
     self->ob_type->tp_free(self);
 }
 
@@ -100,8 +138,6 @@ static Py_ssize_t statevector_length(PyObject *_self) {
     CStateVector *self = (CStateVector*)_self;
     return self->size;
 }
-
-
 
 // sq_item
 static PyObject *statevector_subscript(PyObject *_self, PyObject *pindex) {
@@ -140,12 +176,42 @@ static int statevector_ass_item(PyObject *_self, PyObject *pindex, PyObject *o) 
     return -1;
 }
 
-
-
 static PyMappingMethods statevector_mapping = {
     statevector_length,      //mp_length
     statevector_subscript,   //mp_subscript
     statevector_ass_item,    //mp_ass_subscript
+};
+
+
+PyGetSetDef statevector_getset[] = {
+    {
+        .name = "owner",
+        .get = [](PyObject *_self, void *p) -> PyObject* {
+            CStateVector *self = (CStateVector*)_self;
+            if(self->owner) {
+                Py_INCREF(self->owner);
+                return self->owner;
+            }
+            else {
+                Py_RETURN_NONE;
+            }
+        },
+        .set = [](PyObject *_self, PyObject *val, void *p) -> int {
+            CStateVector *self = (CStateVector*)_self;
+            if(self->owner) {
+                Py_DECREF(self->owner);
+                self->owner = NULL;
+            }
+            if (val != Py_None) {
+                self->owner = val;
+                Py_INCREF(self->owner);
+            }
+            return 0;
+        },
+        .doc = "test doc",
+        .closure = NULL
+    },
+    {NULL}
 };
 
 PyTypeObject CStateVector_Type = {
@@ -178,7 +244,7 @@ PyTypeObject CStateVector_Type = {
   0                                     , // .tp_iternext
   0                                     , // .tp_methods
   0                                     , // .tp_members
-  0                                     , // .tp_getset
+  statevector_getset                    , // .tp_getset
   0                                     , // .tp_base
   0                                     , // .tp_dict
   0                                     , // .tp_descr_get
