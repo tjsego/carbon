@@ -1,5 +1,5 @@
-# need 3.12 for FindPython support
-cmake_minimum_required(VERSION 3.14)
+# need 3.13 for FindPython support
+cmake_minimum_required(VERSION 3.13)
 
 if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -62,7 +62,7 @@ message("CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 message("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 message("CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
 
-find_package (Python 3.5 REQUIRED COMPONENTS Development)
+find_package (Python 3.6 REQUIRED COMPONENTS Development Interpreter)
 
 if(WIN32)
 #  add_definitions("-DMS_NO_COREDLL")
@@ -106,4 +106,3 @@ endif()
 add_subdirectory(extern)
 add_subdirectory(include)
 add_subdirectory(src)
-#add_subdirectory(apps)
