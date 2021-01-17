@@ -29,7 +29,13 @@ enum CError_Options {
 
 #define c_error(code, msg) CErr_Set(code, msg, __LINE__, __FILE__, MX_FUNCTION)
 
-#define c_exp(e, msg) CExp_Set(e, msg, __LINE__, __FILE__, MX_FUNCTION)
+#define c_exp(e) CExp_Set(e, "", __LINE__, __FILE__, MX_FUNCTION)
+
+#define c_exp_msg(e, msg) CExp_Set(e, msg, __LINE__, __FILE__, MX_FUNCTION)
+
+#define C_RETURN_EXP(e) CExp_Set(e, "", __LINE__, __FILE__, MX_FUNCTION); return NULL
+
+#define C_EXP(e) CExp_Set(e, "", __LINE__, __FILE__, MX_FUNCTION)
 
 CAPI_FUNC(HRESULT) CErr_Set(HRESULT code, const char* msg, int line, const char* file, const char* func);
 

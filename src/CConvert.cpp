@@ -68,6 +68,16 @@ PyObject* cast(const float &f) {
 }
 
 template<>
+PyObject* cast(const int16_t &i) {
+    return PyLong_FromLong(i);
+}
+
+template<>
+PyObject* cast(const uint16_t &i) {
+    return PyLong_FromLong(i);
+}
+
+template<>
 bool cast(PyObject *obj) {
     if(PyBool_Check(obj)) {
         return obj == Py_True ? true : false;

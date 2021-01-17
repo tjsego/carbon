@@ -32,6 +32,12 @@ template <typename T>
 T cast(PyObject *o);
 
 template<>
+PyObject* cast(const int16_t &i);
+
+template<>
+PyObject* cast(const uint16_t &i);
+
+template<>
 PyObject* cast(const float &f);
 
 template<>
