@@ -38,6 +38,12 @@ template<>
 PyObject* cast(const uint16_t &i);
 
 template<>
+PyObject* cast(const uint32_t &i);
+
+template<>
+PyObject* cast(const uint64_t &i);
+
+template<>
 PyObject* cast(const float &f);
 
 template<>
@@ -58,10 +64,9 @@ double cast(PyObject *obj);
 template<>
 PyObject* cast(const int &i);
 
+
 template<>
 int cast(PyObject *obj);
-
-
 
 template<>
 PyObject* cast(const std::string &s);
@@ -90,13 +95,46 @@ bool check<float>(PyObject *o);
  *
  * gets a reference to the object, NULL if not exist.
  */
-PyObject *arg(const char* name, int index, PyObject *_args, PyObject *_kwargs);
-    
+PyObject *py_arg(const char* name, int index, PyObject *_args, PyObject *_kwargs);
+
     /**
      * gets the __repr__ / __str__ representations of python objects
      */
 std::string repr(PyObject *o);
 std::string str(PyObject *o);
+
+
+
+template<typename T>
+T arg(const char* name, int index, PyObject *args, PyObject *kwargs) {
+    PyObject *value = py_arg(name, index, args, kwargs);
+    if(value) {
+        return cast<T>(value);
+    }
+    throw std::runtime_error(std::string("missing argument ") + name);
+};
+
+template<>
+PyObject* arg<PyObject*>(const char* name, int index, PyObject *_args, PyObject *_kwargs);
+
+template<typename T>
+T arg(const char* name, int index, PyObject *args, PyObject *kwargs, T deflt) {
+    
+    PyObject *value = py_arg(name, index, args, kwargs);
+    if(value) {
+        return cast<T>(value);
+    }
+    return deflt;
+};
+
+
+
+
+
+
+
+
+
 
 }
 

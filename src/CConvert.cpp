@@ -78,6 +78,16 @@ PyObject* cast(const uint16_t &i) {
 }
 
 template<>
+PyObject* cast(const uint32_t &i) {
+    return PyLong_FromLong(i);
+}
+
+template<>
+PyObject* cast(const uint64_t &i) {
+    return PyLong_FromLong(i);
+}
+
+template<>
 bool cast(PyObject *obj) {
     if(PyBool_Check(obj)) {
         return obj == Py_True ? true : false;
@@ -102,7 +112,7 @@ bool check<bool>(PyObject *o) {
 }
     
 
-PyObject *arg(const char* name, int index, PyObject *_args, PyObject *_kwargs) {
+PyObject *py_arg(const char* name, int index, PyObject *_args, PyObject *_kwargs) {
     PyObject *kwobj = _kwargs ?  PyDict_GetItemString(_kwargs, name) : NULL;
     PyObject *aobj = _args && (PyTuple_Size(_args) > index) ? PyTuple_GetItem(_args, index) : NULL;
     
@@ -192,6 +202,39 @@ std::string str(PyObject *o) {
     Py_DecRef( pStr ) ;
     return result;
 }
+
+
+/*
+
+PyObject *py_arg(const char* name, int index, PyObject *args, PyObject *kwargs) {
+         
+    if(args == NULL && kwargs == NULL) {
+        return NULL;
+    }
+    
+    else if(args != NULL && kwargs == NULL) {
+        return (PyTuple_Size(args) < index) ? PyTuple_GetItem(args, index) : NULL;
+    }
+    
+    else if(args == NULL && kwargs != NULL) {
+        return PyDict_GetItemString(kwargs, name);
+    }
+    
+    // both args and kwargs are not null,
+    // I guess, take precedence of the item in the dict???
+
+    PyObject *result = PyDict_GetItemString(kwargs, name);
+    if(result) {
+        return result;
+    }
+    
+    if(PyTuple_Size(args) < index) {
+        return PyTuple_GetItem(args, index);
+    }
+    
+    return NULL;
+}
+ */
 
 
 }
