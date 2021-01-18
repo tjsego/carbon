@@ -10,6 +10,8 @@
 
 #include <c_port.h>
 #include <string>
+#include <stdexcept>
+
 
 namespace carbon {
 
