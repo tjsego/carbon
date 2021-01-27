@@ -76,6 +76,19 @@ PyObject* cast(const std::string &s);
 template<>
 std::string cast(PyObject *o);
 
+
+template<>
+inline int16_t cast(PyObject *o) {return (int16_t)cast<int>(o);};
+
+template<>
+inline uint16_t cast(PyObject *o) {return (uint16_t)cast<int>(o);};
+
+template<>
+inline uint32_t cast(PyObject *o) {return (uint32_t)cast<int>(o);};
+
+template<>
+inline uint64_t cast(PyObject *o) {return (uint64_t)cast<int>(o);};
+
 /**
  * check if type can be converted
  */
