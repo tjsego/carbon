@@ -141,7 +141,7 @@ typedef uint8_t bool;
 #ifdef _WIN32
 #    define CAPI_DATA(RTYPE) extern "C" CAPI_EXPORT RTYPE
 #else
-#    define CAPI_DATA(RTYPE) extern RTYPE CAPI_EXPORT
+#    define CAPI_DATA(RTYPE) extern CAPI_EXPORT RTYPE 
 #endif
 #endif
 
