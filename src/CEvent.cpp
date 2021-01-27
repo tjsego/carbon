@@ -408,7 +408,7 @@ int CTimeEvent_Init(CTimeEvent *event, PyObject *args, PyObject *kwargs) {
 
     if(!kwargs) {
         PyErr_SetString(PyExc_TypeError, "called without any keyword arguments");
-        return NULL;
+        return -1;
     }
     
     event->last_fired = 0;

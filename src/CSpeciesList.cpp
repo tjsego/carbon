@@ -16,7 +16,7 @@
 
 static int specieslist_init(CSpeciesList *self, PyObject *args, PyObject *kwargs) {
     std::cout << MX_FUNCTION << std::endl;
-
+    return 0;
 }
 
 // get named attribute
@@ -36,7 +36,7 @@ static PyObject *specieslist_getattro(CSpeciesList *self, PyObject *attr) {
 //Set the value of the named attribute for the object.
 // The value argument is set to NULL to delete the attribute.
 static int specieslist_setattro(CSpeciesList *self, PyObject *attr, PyObject *value) {
-    
+  return 0;
 }
 
 static void specieslist_dealloc(CSpeciesList *self) {
