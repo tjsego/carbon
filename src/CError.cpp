@@ -7,6 +7,9 @@
 
 #include <cstdio>
 #include <carbon.h>
+
+#include <CConvert.hpp>
+
 #include <ctype.h>
 
 #ifdef CType
@@ -45,6 +48,28 @@ CAPI_FUNC(HRESULT) CErr_Set(HRESULT code, const char* msg, int line,
 	if(CError_Opt & CERROR_SET_PYTHON_ERROR) {
 	    std::stringstream ss;
 	    ss << "error: " << code << ", " << msg << ", " << line << ", " << func;
+        
+        if(PyErr_Occurred()) {
+            PyObject *err = NULL;
+            PyObject *value = NULL;
+            PyObject *traceback = NULL;
+            PyErr_Fetch(&err, &value, &traceback);
+            
+            ss << std::endl;
+            
+            if(err) {
+                ss << "Python Error: " << carbon::str(err) << std::endl;
+            }
+            
+            if(value) {
+                ss << "Python Value: " << carbon::str(value) << std::endl;
+            }
+            
+            if(traceback) {
+                ss << "Traceback: " << carbon::str(traceback) << std::endl;
+            }
+        }
+        
 	    PyErr_SetString(PyExc_RuntimeError, ss.str().c_str());
 	}
 
@@ -64,6 +89,27 @@ CAPI_FUNC(HRESULT) CExp_Set(const std::exception& e, const char* msg, int line, 
     if(CError_Opt & CERROR_SET_PYTHON_ERROR) {
         std::stringstream ss;
         ss << "error: " << e.what() << ", " << msg << ", " << line << ", " << func;
+        
+        if(PyErr_Occurred()) {
+            PyObject *err = NULL;
+            PyObject *value = NULL;
+            PyObject *traceback = NULL;
+            PyErr_Fetch(&err, &value, &traceback);
+            
+            ss << std::endl;
+            
+            if(err) {
+                ss << "Python Error: " << carbon::str(err) << std::endl;
+            }
+            
+            if(value) {
+                ss << "Python Value: " << carbon::str(value) << std::endl;
+            }
+            
+            if(traceback) {
+                ss << "Traceback: " << carbon::str(traceback) << std::endl;
+            }
+        }
         PyErr_SetString(PyExc_RuntimeError, ss.str().c_str());
     }
     
