@@ -9,6 +9,7 @@
 #include <carbon.h>
 #include <c_util.h>
 #include <vector>
+#include <iostream>
 
 
 CRandomType CRandom;
@@ -124,6 +125,13 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
     if(!moduleString) {
         return NULL;
     }
+    
+    #if defined(__has_feature)
+    #  if __has_feature(thread_sanitizer)
+        std::cout << "thread sanitizer, returning NULL" << std::endl;
+        return NULL;
+    #  endif
+    #endif
     
     PyObject* module = PyImport_Import(moduleString);
     if(!module) {
