@@ -45,13 +45,11 @@ PyObject *Carbon_ModulePtr = NULL;
 
 static PyObject * moduleinit(void)
 {
-    std::cout << "Carbon, " << MX_FUNCTION << std::endl;
-    PyObject *m;
+    PyObject *m = NULL;
 
-
-    std::cout << "creating carbon module" << std::endl;
+    Log(LOG_DEBUG) << "creating carbon module";
+    
     m = PyModule_Create(&carbon_module);
-
 
     if (m == NULL)
         return NULL;
@@ -59,6 +57,8 @@ static PyObject * moduleinit(void)
     CType_init(m);
 
     CObject_init(m);
+    
+    _CLogger_Init(m);
 
     _CEvent_Init(m);
 
@@ -102,25 +102,22 @@ static PyObject * moduleinit(void)
     return m;
 }
 
-
 PyMODINIT_FUNC PyInit_carbon(void)
 {
     return moduleinit();
 }
 
-
 /**
  * Initialize the entire runtime.
  */
 CAPI_FUNC(HRESULT) C_Initialize(int) {
-    std::cout << MX_FUNCTION << std::endl;
 
     if(!Py_IsInitialized()) {
         Py_Initialize();
     }
 
-
-    std::cout << "creating carbon module" << std::endl;
+    Log(LOG_DEBUG) << "creating carbon module";
+    
     if(Carbon_ModulePtr == NULL) {
 
         Carbon_ModulePtr = PyModule_Create(&carbon_module);
@@ -131,8 +128,7 @@ CAPI_FUNC(HRESULT) C_Initialize(int) {
         CObject_init(Carbon_ModulePtr);
 
         if (PyType_Ready((PyTypeObject*)&CListWrap_Type) < 0) {
-            std::cout << "could not initialize CListWrap_Type " << std::endl;
-            return E_FAIL;
+            return c_error(E_FAIL, "could not initialize CListWrap_Type " );
         }
         
         _CSpecies_Init(Carbon_ModulePtr);

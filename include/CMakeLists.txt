@@ -42,6 +42,7 @@ set (_PUBLIC_HEADERS
   c_species.h
   c_speciesreference.h
   c_util.h
+  CLogger.hpp
   )
 
 message("_PUBLIC_HEADERS: ${_PUBLIC_HEADERS}")

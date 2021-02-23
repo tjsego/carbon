@@ -25,6 +25,7 @@
 
 #ifdef __cplusplus
 #include <c_object.hpp>
+#include <CLogger.hpp>
 #endif
 
 /**

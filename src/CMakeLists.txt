@@ -13,6 +13,7 @@ set(SRC
   CSpeciesList.cpp
   CSpeciesValue.cpp
   CStateVector.cpp
+  CLogger.cpp
 
   c_model.cpp
   c_compartment.cpp
