@@ -3,6 +3,7 @@
 #include <c_object.h>
 #include <c_error.h>
 #include <iostream>
+#include <algorithm>
 
 class Message {
 public:
