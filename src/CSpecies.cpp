@@ -352,7 +352,7 @@ static int cspecies_init(CSpecies *self, PyObject *args, PyObject *kwargs) {
         if(carbon::check<std::string>(arg)) {
             s = carbon::cast<std::string>(arg);
             
-            static std::regex e ("\\s*(const\\s+)?(\\$)?(\\w+)(\\s+=\\s+)?([-+]?[0-9]*\\.?[0-9]+)?\\s*");
+            static std::regex e ("\\s*(const\\s+)?(\\$)?(\\w+)(\\s*=\\s*)?([-+]?[0-9]*\\.?[0-9]+)?\\s*");
             
             std::smatch sm;    // same as std::match_results<string::const_iterator> sm;
             

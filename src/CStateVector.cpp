@@ -15,6 +15,18 @@
 #include <iostream>
 #include <sstream>
 
+// reset the species values based on the values specified in the species.
+void CStateVector::reset() {
+    for(int i = 0; i < species->size(); ++i) {
+        CSpecies *s = species->item(i);
+        float value = 0.f;
+        if(s->species->isSetInitialConcentration()) {
+            value = s->species->getInitialConcentration();
+        }
+        fvec[i] = value;
+    }
+}
+
 
 // get named attribute
 static PyObject *statevector_getattro(CStateVector *self, PyObject *attr) {
@@ -142,10 +154,6 @@ static void statevector_dealloc(CStateVector *self) {
     self->ob_type->tp_free(self);
 }
 
-static PyMethodDef statevector_methods[] = {
-        { NULL, NULL, 0, NULL }
-};
-
 // sq_length
 static Py_ssize_t statevector_length(PyObject *_self) {
     CStateVector *self = (CStateVector*)_self;
@@ -225,6 +233,16 @@ PyGetSetDef statevector_getset[] = {
         .closure = NULL
     },
     {NULL}
+};
+
+static PyObject *statevector_reset(CStateVector *self) {
+    self->reset();
+    Py_RETURN_NONE;
+}
+
+static PyMethodDef statevector_methods[] = {
+    { "reset", (PyCFunction)statevector_reset, METH_NOARGS, NULL },
+    { NULL, NULL, 0, NULL }
 };
 
 PyTypeObject CStateVector_Type = {

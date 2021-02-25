@@ -43,6 +43,9 @@ struct CStateVector : PyObject {
     
     // vector of species flags
     uint32_t *species_flags;
+    
+    // reset the species values based on the values specified in the species.
+    void reset();
 };
 
 
