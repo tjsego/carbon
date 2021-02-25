@@ -16,9 +16,11 @@ namespace libsbml{
     class SBMLNamespaces;
 };
 
+
+
 struct CSpecies : PyObject {
     libsbml::Species *species;
-    
+    int32_t flags() const;
     const std::string& getId () const;
 };
 

@@ -86,15 +86,28 @@ CStateVector* CStateVector_New(struct CSpeciesList *species,
     
     obj->size = species->size();
     
+    const int fvec_offset = 0;
+    const int fvec_size = obj->size * sizeof(float);
+    const int q_offset = fvec_offset + fvec_size;
+    const int q_size = obj->size * sizeof(float);
+    const int flags_offset = q_offset + q_size;
+    const int flags_size = obj->size * sizeof(int32_t);
+    
     if(!data) {
         obj->flags |= STATEVECTOR_OWNMEMORY;
-        obj->fvec = (float*)malloc(2 * obj->size * sizeof(float));
-        obj->q = obj->fvec + obj->size;
-        bzero(obj->fvec, 2 * obj->size * sizeof(float));
+        obj->data = malloc(fvec_size + q_size + flags_size);
+        bzero(obj->data, fvec_size + q_size + flags_size);
+        obj->fvec =          (float*)   ((uint8_t*)obj->data + fvec_offset);
+        obj->q =             (float*)   ((uint8_t*)obj->data + q_offset);
+        obj->species_flags = (uint32_t*)((uint8_t*)obj->data + flags_offset);
     }
     
     if(existingStateVector) {
         statevector_copy_values(obj, existingStateVector);
+    }
+    
+    for(int i = 0; i < species->size(); ++i) {
+        obj->species_flags[i] = species->item(i)->flags();
     }
     
     return obj;

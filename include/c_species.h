@@ -14,6 +14,16 @@
 
 CAPI_STRUCT(CSpecies_t);
 
+
+enum CSpeciesFlags {
+
+    SPECIES_BOUNDARY           = 1 << 0,
+    SPECIES_SUBSTANCE          = 1 << 2,
+    SPECIES_CONSTANT           = 1 << 3,
+    SPECIES_KONSTANT           = SPECIES_BOUNDARY | SPECIES_CONSTANT
+};
+
+
 /**
  * Creates a new CSpecies_t structure using the given SBML @p level
  * and @p version values.

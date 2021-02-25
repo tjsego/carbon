@@ -30,6 +30,8 @@ struct CStateVector : PyObject {
      */
     PyObject *owner;
     
+    void* data;
+    
     // vector of values
     union {
         float *fvec;
@@ -38,6 +40,9 @@ struct CStateVector : PyObject {
     
     // vector of fluxes
     float *q;
+    
+    // vector of species flags
+    uint32_t *species_flags;
 };
 
 

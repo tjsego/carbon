@@ -729,4 +729,25 @@ int PySpecies_setHasOnlySubstanceUnits(const CSpecies *cs, PyObject *value)
     return s->setHasOnlySubstanceUnits(carbon::cast<bool>(value));
 }
 
+int32_t CSpecies::flags() const
+{
+    int32_t r = 0;
+    
+    if(species->getBoundaryCondition()) {
+        r |= SPECIES_BOUNDARY;
+    }
+    
+    if(species->getHasOnlySubstanceUnits()) {
+        r |= SPECIES_SUBSTANCE;
+    }
+    
+    if(species->getConstant()) {
+        r |= SPECIES_CONSTANT;
+    }
+    
+    return r;
+}
+
+
 C_BASIC_PYTHON_TYPE_INIT(Species)
+
