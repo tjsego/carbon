@@ -296,8 +296,165 @@ static PyObject *logger_log(PyObject *self, PyObject *args, PyObject *kwargs) {
     }
 }
 
+static PyObject *logger_set_level(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        
+        logLevel = carbon::arg<int>("level", 0, args, kwargs);
+        
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_get_level(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        return carbon::cast(logLevel);
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+static PyObject *logger_disable_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_disable_console_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_enable_console_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_enable_file_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_disable_file_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_get_current_level_as_string(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_get_filename(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+
+static PyObject *logger_set_formatting_pattern(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+
+static PyObject *logger_get_formatting_pattern(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+
+static PyObject *logger_level_to_string(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+
+static PyObject *logger_string_to_level(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_set_colored_output(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
+static PyObject *logger_set_property(PyObject *self, PyObject *args, PyObject *kwargs) {
+    try {
+        Py_RETURN_NONE;
+    }
+    catch(const std::exception &e) {
+        C_RETURN_EXP(e);
+    }
+}
+
 static PyMethodDef logger_methods[] = {
     { "log", (PyCFunction)logger_log, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "set_level", (PyCFunction)logger_set_level, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "get_level", (PyCFunction)logger_get_level, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "disable_logging", (PyCFunction)logger_disable_logging, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "disable_console_logging", (PyCFunction)logger_disable_console_logging, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "enable_console_logging", (PyCFunction)logger_enable_console_logging, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "enable_file_logging", (PyCFunction)logger_enable_file_logging, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "disable_file_logging", (PyCFunction)logger_disable_file_logging, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "get_current_level_as_string", (PyCFunction)logger_get_current_level_as_string, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "get_current_level_as_string", (PyCFunction)logger_get_current_level_as_string, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "get_filename", (PyCFunction)logger_get_filename, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "set_formatting_pattern", (PyCFunction)logger_set_formatting_pattern, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "get_formatting_pattern", (PyCFunction)logger_get_formatting_pattern, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "level_to_string", (PyCFunction)logger_level_to_string, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "string_to_level", (PyCFunction)logger_string_to_level, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "set_colored_output", (PyCFunction)logger_set_colored_output, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
+    { "set_property", (PyCFunction)logger_set_property, METH_STATIC| METH_VARARGS | METH_KEYWORDS, NULL },
     { NULL, NULL, 0, NULL }
 };
 
