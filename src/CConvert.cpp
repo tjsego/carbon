@@ -8,7 +8,11 @@
 #include "CConvert.hpp"
 #include <iostream>
 
-static std::string pyerror_str()
+
+
+namespace carbon {
+
+std::string pyerror_str()
 {
     std::string result;
     // get the error details
@@ -50,8 +54,6 @@ static std::string pyerror_str()
     
     return result;
 }
-
-namespace carbon {
     
 
 template<>
@@ -193,13 +195,22 @@ std::string repr(PyObject *o) {
 }
 
 std::string str(PyObject *o) {
-    PyObject* pStr = PyObject_Str( o ) ;
-    
-    PyObject * str=PyUnicode_AsASCIIString(pStr);
-    std::string result = std::string(PyBytes_AsString(str));
-    Py_DECREF(str);
-    
-    Py_DecRef( pStr ) ;
+    std::string result;
+    if(o) {
+        PyObject* pStr = PyObject_Str( o ) ;
+        if(pStr) {
+            PyObject *str = PyUnicode_AsASCIIString(pStr);
+            result = std::string(PyBytes_AsString(str));
+            Py_DECREF(str);
+            Py_DecRef( pStr ) ;
+        }
+        else {
+            result += "error calling PyObject_Str(o)";
+        }
+    }
+    else {
+        result = "NULL";
+    }
     return result;
 }
 

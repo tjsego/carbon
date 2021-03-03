@@ -29,6 +29,8 @@ enum CError_Options {
 
 #define c_error(code, msg) CErr_Set(code, msg, __LINE__, __FILE__, MX_FUNCTION)
 
+#define C_ERR(code, msg) CErr_Set(code, msg, __LINE__, __FILE__, MX_FUNCTION)
+
 #define c_exp(e) CExp_Set(e, "", __LINE__, __FILE__, MX_FUNCTION)
 
 #define c_exp_msg(e, msg) CExp_Set(e, msg, __LINE__, __FILE__, MX_FUNCTION)

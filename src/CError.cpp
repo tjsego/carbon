@@ -24,11 +24,9 @@
 #error CType is macro
 #endif
 
-
-
 #include <iostream>
-
 #include <sstream>
+#include <CLogger.hpp>
 
 static CError Error;
 static CError *ErrorPtr = NULL;
@@ -36,15 +34,23 @@ static uint32_t CError_Opt = CERROR_SET_PYTHON_ERROR;
 
 CAPI_FUNC(HRESULT) CErr_Set(HRESULT code, const char* msg, int line,
 		const char* file, const char* func) {
-	std::cerr << "error: " << code << ", " << msg << ", " << line << ", " << func << std::endl;
 
 	Error.err = code;
 	Error.fname = file;
 	Error.func = func;
 	Error.msg = msg;
+    
+    std::string logstr = "Code: ";
+    logstr += std::to_string(code);
+    logstr += ", Msg: ";
+    logstr += msg;
+    logstr += ", File: " + std::string(file);
+    logstr += ", Line: " + std::to_string(line);
+    logstr += ", Function: " + std::string(func);
+    CLogger::log(LOG_ERROR, logstr);
 
 	ErrorPtr = &Error;
-
+    
 	if(CError_Opt & CERROR_SET_PYTHON_ERROR) {
 	    std::stringstream ss;
 	    ss << "error: " << code << ", " << msg << ", " << line << ", " << func;

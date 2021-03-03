@@ -118,6 +118,11 @@ PyObject *py_arg(const char* name, int index, PyObject *_args, PyObject *_kwargs
 std::string repr(PyObject *o);
 std::string str(PyObject *o);
 
+/**
+ * get the python error string, empty string if no error. 
+ */
+std::string pyerror_str();
+
 
 
 template<typename T>
