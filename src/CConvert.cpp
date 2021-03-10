@@ -172,6 +172,11 @@ std::string cast(PyObject *o) {
     }
 }
 
+template<>
+carbon::sequence cast(PyObject *o) {
+    return carbon::sequence(o);
+}
+
 template <>
 bool check<std::string>(PyObject *o) {
     return o && PyUnicode_Check(o);
@@ -180,6 +185,11 @@ bool check<std::string>(PyObject *o) {
 template <>
 bool check<float>(PyObject *o) {
     return o && PyNumber_Check(o);
+}
+
+template <>
+bool check<carbon::sequence>(PyObject *o) {
+    return o && PySequence_Check(o);
 }
     
     

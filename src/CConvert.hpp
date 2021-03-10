@@ -11,6 +11,7 @@
 #include <c_port.h>
 #include <string>
 #include <stdexcept>
+#include <PySequence.hpp>
 
 
 namespace carbon {
@@ -76,6 +77,9 @@ PyObject* cast(const std::string &s);
 template<>
 std::string cast(PyObject *o);
 
+template<>
+carbon::sequence cast(PyObject *o);
+
 
 template<>
 inline int16_t cast(PyObject *o) {return (int16_t)cast<int>(o);};
@@ -104,6 +108,9 @@ bool check<std::string>(PyObject *o);
 template <>
 bool check<float>(PyObject *o);
 
+template <>
+bool check<sequence>(PyObject *o);
+
 
 /**
  * grab either the i'th arg from the args, or keywords.
@@ -119,7 +126,7 @@ std::string repr(PyObject *o);
 std::string str(PyObject *o);
 
 /**
- * get the python error string, empty string if no error. 
+ * get the python error string, empty string if no error.
  */
 std::string pyerror_str();
 
@@ -139,7 +146,7 @@ PyObject* arg<PyObject*>(const char* name, int index, PyObject *_args, PyObject 
 
 template<typename T>
 T arg(const char* name, int index, PyObject *args, PyObject *kwargs, T deflt) {
-    
+
     PyObject *value = py_arg(name, index, args, kwargs);
     if(value) {
         return cast<T>(value);

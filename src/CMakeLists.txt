@@ -14,6 +14,7 @@ set(SRC
   CSpeciesValue.cpp
   CStateVector.cpp
   CLogger.cpp
+  PySequence.cpp
 
   c_model.cpp
   c_compartment.cpp
@@ -46,6 +47,8 @@ set(HEADERS
   CType.hpp
   c_reaction.hpp
   c_list.hpp
+
+  PySequence.hpp
   )
 
 
