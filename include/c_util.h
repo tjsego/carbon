@@ -73,6 +73,11 @@ CAPI_DATA(CRandomType) CRandom;
  */
 CAPI_FUNC(PyObject*) CIPython_Get();
 
+
+CAPI_FUNC(PyObject*) C_CmdLineArgsForPid(PyObject *pid);
+
+
+
 #endif
 
 
