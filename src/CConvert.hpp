@@ -108,8 +108,6 @@ bool check<std::string>(PyObject *o);
 template <>
 bool check<float>(PyObject *o);
 
-// check to make sure it's a true list type thing, and NOT a string.
-// valid list type things are tuples, lists, and numpy arrays. 
 template <>
 bool check<sequence>(PyObject *o);
 
