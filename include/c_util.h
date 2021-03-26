@@ -73,8 +73,11 @@ CAPI_DATA(CRandomType) CRandom;
  */
 CAPI_FUNC(PyObject*) CIPython_Get();
 
+// are we running in ipython interactive terminal
+CAPI_FUNC(bool) C_TerminalInteractiveShell();
 
-CAPI_FUNC(PyObject*) C_CmdLineArgsForPid(PyObject *pid);
+CAPI_FUNC(bool) C_ZMQInteractiveShell();
+
 
 
 
