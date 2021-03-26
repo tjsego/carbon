@@ -189,7 +189,7 @@ bool check<float>(PyObject *o) {
 
 template <>
 bool check<carbon::sequence>(PyObject *o) {
-    return o && PySequence_Check(o);
+    return o && PySequence_Check(o) && !PyUnicode_Check(o);
 }
     
     
