@@ -159,6 +159,15 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
 
     PyObject* result = PyObject_CallObject(get_ipython, NULL);
     
+    if(result == NULL) {
+        
+        PyObject* err = PyErr_Occurred();
+        std::string str = "error calling IPython.core.getipython.get_ipython(): ";
+        str += carbon::str(err);
+        Log(LOG_FATAL) << str;
+        PyErr_Clear();
+    }
+    
     Py_DECREF(moduleString);
     Py_DECREF(module);
     Py_DECREF(get_ipython);
