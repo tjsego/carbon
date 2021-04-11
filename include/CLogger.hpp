@@ -216,6 +216,8 @@ public:
      * check if we have colored logging enabled.
      */
     static bool getColoredOutput();
+    
+    static std::ostream *getOutputStream();
 
     /**
      * enable / disable colored output

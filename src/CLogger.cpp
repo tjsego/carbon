@@ -4,6 +4,7 @@
 #include <c_error.h>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 
 class Message {
 public:
@@ -21,6 +22,11 @@ public:
 };
 
 static int logLevel = Message::PRIO_NOTICE;
+
+static std::ostream *os = &std::cout;
+static std::ofstream outputFile;
+
+
 
 class FakeLogger {
 public:
@@ -109,18 +115,28 @@ void CLogger::disableLogging()
 
 void CLogger::disableConsoleLogging()
 {
+
 }
 
 void CLogger::enableConsoleLogging(int level)
 {
+    outputFile.close();
+    os = &std::cout;
 }
 
 void CLogger::enableFileLogging(const std::string &fileName, int level)
 {
+    outputFile.close();
+    outputFile.open(fileName, std::ios_base::out|std::ios_base::ate);
+    if(outputFile.is_open()) {
+        os = &outputFile;
+    }
 }
 
 void CLogger::disableFileLogging()
 {
+    outputFile.close();
+    os = &std::cout;
 }
 
 std::string CLogger::getCurrentLevelAsString()
@@ -235,9 +251,9 @@ void CLogger::setProperty(const std::string &name, const std::string &value)
 void CLogger::log(CLogLevel l, const std::string &msg)
 {
     FakeLogger &logger = getLogger();
-    
+
     Message::Priority level = (Message::Priority)(l);
-    
+
     switch (level)
     {
     case Message::PRIO_FATAL:
@@ -277,18 +293,18 @@ void CLogger::setConsoleStream(std::ostream *os)
 static PyObject *logger_log(PyObject *self, PyObject *args, PyObject *kwargs) {
     try {
         int level = carbon::arg<int>("level", 0, args, kwargs);
-        
+
         if(level <= logLevel) {
             std::stringstream buffer;
-            
+
             int size = PyTuple_Size(args);
             for(int i = 1; i < size; ++i) {
                 buffer << carbon::str(PyTuple_GetItem(args, i));
             }
-            
+
             CLogger::log((CLogLevel)level, buffer.str());
         }
-        
+
         Py_RETURN_NONE;
     }
     catch(const std::exception &e) {
@@ -298,9 +314,9 @@ static PyObject *logger_log(PyObject *self, PyObject *args, PyObject *kwargs) {
 
 static PyObject *logger_set_level(PyObject *self, PyObject *args, PyObject *kwargs) {
     try {
-        
+
         logLevel = carbon::arg<int>("level", 0, args, kwargs);
-        
+
         Py_RETURN_NONE;
     }
     catch(const std::exception &e) {
@@ -336,6 +352,7 @@ static PyObject *logger_disable_console_logging(PyObject *self, PyObject *args, 
 
 static PyObject *logger_enable_console_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
     try {
+        CLogger::enableConsoleLogging();
         Py_RETURN_NONE;
     }
     catch(const std::exception &e) {
@@ -345,6 +362,8 @@ static PyObject *logger_enable_console_logging(PyObject *self, PyObject *args, P
 
 static PyObject *logger_enable_file_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
     try {
+        std::string fname = carbon::arg<std::string>("file_name", 0, args, kwargs);
+        CLogger::enableFileLogging(fname, LOG_CURRENT);
         Py_RETURN_NONE;
     }
     catch(const std::exception &e) {
@@ -354,6 +373,7 @@ static PyObject *logger_enable_file_logging(PyObject *self, PyObject *args, PyOb
 
 static PyObject *logger_disable_file_logging(PyObject *self, PyObject *args, PyObject *kwargs) {
     try {
+        CLogger::disableFileLogging();
         Py_RETURN_NONE;
     }
     catch(const std::exception &e) {
@@ -534,11 +554,11 @@ HRESULT _CLogger_Init(PyObject* m) {
     }
 
     PyObject *dict = CLogger_Type.tp_dict;
-    
+
     if(!dict) {
         return c_error(E_FAIL, "CLogger_Type.dict is null");
     }
-    
+
     PyDict_SetItemString(dict, "LOG_CURRENT", PyLong_FromLong(LOG_CURRENT));
     PyDict_SetItemString(dict, "LOG_FATAL", PyLong_FromLong(LOG_FATAL));
     PyDict_SetItemString(dict, "LOG_CRITICAL", PyLong_FromLong(LOG_CRITICAL));
@@ -555,47 +575,47 @@ HRESULT _CLogger_Init(PyObject* m) {
 void FakeLogger::fatal(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "FATAL: " << fmt << ", func: " << func << ", file:" << file << ",lineno:" << line << std::endl;
+    *os << "FATAL: " << fmt << ", func: " << func << ", file:" << file << ",lineno:" << line << std::endl;
 }
 
 void FakeLogger::critical(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "CRITICAL: " << fmt << ", func: " << func << ",file:" << file << ",lineno:" << line << std::endl;
+    *os << "CRITICAL: " << fmt << ", func: " << func << ",file:" << file << ",lineno:" << line << std::endl;
 }
 
 void FakeLogger::error(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "ERROR: " << fmt << ", func: " << func  << ",file:" << file << ",lineno:" << line << std::endl;
+    *os << "ERROR: " << fmt << ", func: " << func  << ",file:" << file << ",lineno:" << line << std::endl;
 }
 
 void FakeLogger::warning(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "WARNING: " << fmt << ", func: " << func << ",file:" << file << ",lineno:" << line << std::endl;
+    *os << "WARNING: " << fmt << ", func: " << func << ",file:" << file << ",lineno:" << line << std::endl;
 }
 
 void FakeLogger::notice(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "NOTICE: " << fmt << ", func: " << func << std::endl;
+    *os << "NOTICE: " << fmt << ", func: " << func << std::endl;
 }
 
 void FakeLogger::information(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "INFO: " << fmt << ", func: " << func << std::endl;
+    *os << "INFO: " << fmt << ", func: " << func << std::endl;
 }
 
 void FakeLogger::debug(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "DEBUG: " << fmt << ", func: " << func << std::endl;
+    *os << "DEBUG: " << fmt << ", func: " << func << std::endl;
 }
 
 void FakeLogger::trace(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    std::cout << "TRACE: " << fmt << ", func: " << func << std::endl;
+    *os << "TRACE: " << fmt << ", func: " << func << std::endl;
 }
