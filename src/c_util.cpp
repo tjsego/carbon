@@ -146,7 +146,14 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
     
     PyObject* module = PyImport_Import(moduleString);
     if(!module) {
-        Log(LOG_DEBUG) << "could not import " << carbon::str(moduleString) << ", returning NULL";
+        PyObject *err = PyErr_Occurred();
+        Log(LOG_DEBUG) << "could not import "
+            << carbon::str(moduleString)
+            << ", "
+            << carbon::str(err)
+            << ", returning NULL";
+        PyErr_Clear();
+        Py_DECREF(moduleString);
         return NULL;
     }
     
@@ -155,7 +162,13 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
     PyObject* get_ipython = PyObject_GetAttrString(module,(char*)"get_ipython");
     
     if(!get_ipython) {
-        Log(LOG_WARNING) << "PyObject_GetAttrString(\"get_ipython\") failed, returning NULL";
+        PyObject *err = PyErr_Occurred();
+        Log(LOG_WARNING) << "PyObject_GetAttrString(\"get_ipython\") failed: "
+            << carbon::str(err)
+            << ", returning NULL";
+        PyErr_Clear();
+        Py_DECREF(moduleString);
+        Py_DECREF(module);
         return NULL;
     }
 
