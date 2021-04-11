@@ -70,6 +70,15 @@ enum CLogLevel
     LOG_TRACE        /// A tracing message. This is the lowest priority.
 };
 
+enum CLogEvent
+{
+    LOG_OUTPUTSTREAM_CHANGED,
+    LOG_LEVEL_CHANGED,
+    LOG_CALLBACK_SET
+};
+
+typedef HRESULT (*CLoggerCallback)(CLogEvent, std::ostream *);
+
 /**
  * The Carbon logger.
  *
@@ -78,6 +87,8 @@ enum CLogLevel
 class CAPI_EXPORT CLogger : PyObject
 {
 public:
+
+
 
 
     /**
@@ -216,7 +227,7 @@ public:
      * check if we have colored logging enabled.
      */
     static bool getColoredOutput();
-    
+
     static std::ostream *getOutputStream();
 
     /**
@@ -286,6 +297,9 @@ public:
      * file objects and not the C++ file streams.
      */
     static void setConsoleStream(std::ostream *os);
+
+
+    static void setCallback(CLoggerCallback);
 
 };
 

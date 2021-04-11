@@ -26,6 +26,8 @@ static int logLevel = Message::PRIO_NOTICE;
 static std::ostream *os = &std::cout;
 static std::ofstream outputFile;
 
+static CLoggerCallback callback = NULL;
+
 
 
 class FakeLogger {
@@ -102,6 +104,10 @@ std::ostream& CLoggingBuffer::stream()
 void CLogger::setLevel(int level)
 {
     logLevel = level;
+    
+    if(callback) {
+        callback(LOG_LEVEL_CHANGED, os);
+    }
 }
 
 int CLogger::getLevel()
@@ -122,6 +128,10 @@ void CLogger::enableConsoleLogging(int level)
 {
     outputFile.close();
     os = &std::cout;
+
+    if(callback) {
+        callback(LOG_OUTPUTSTREAM_CHANGED, os);
+    }
 }
 
 void CLogger::enableFileLogging(const std::string &fileName, int level)
@@ -131,12 +141,20 @@ void CLogger::enableFileLogging(const std::string &fileName, int level)
     if(outputFile.is_open()) {
         os = &outputFile;
     }
+
+    if(callback) {
+        callback(LOG_OUTPUTSTREAM_CHANGED, os);
+    }
 }
 
 void CLogger::disableFileLogging()
 {
     outputFile.close();
     os = &std::cout;
+
+    if(callback) {
+        callback(LOG_OUTPUTSTREAM_CHANGED, os);
+    }
 }
 
 std::string CLogger::getCurrentLevelAsString()
@@ -288,6 +306,15 @@ void CLogger::log(CLogLevel l, const std::string &msg)
 
 void CLogger::setConsoleStream(std::ostream *os)
 {
+}
+
+
+void CLogger::setCallback(CLoggerCallback cb) {
+    callback = cb;
+    
+    if(callback) {
+        callback(LOG_CALLBACK_SET, os);
+    }
 }
 
 static PyObject *logger_log(PyObject *self, PyObject *args, PyObject *kwargs) {
