@@ -146,6 +146,7 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
     
     PyObject* module = PyImport_Import(moduleString);
     if(!module) {
+        Log(LOG_DEBUG) << "could not import " << carbon::str(moduleString) << ", returning NULL";
         return NULL;
     }
     
@@ -154,13 +155,13 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
     PyObject* get_ipython = PyObject_GetAttrString(module,(char*)"get_ipython");
     
     if(!get_ipython) {
+        Log(LOG_WARNING) << "PyObject_GetAttrString(\"get_ipython\") failed, returning NULL";
         return NULL;
     }
 
     PyObject* result = PyObject_CallObject(get_ipython, NULL);
     
     if(result == NULL) {
-        
         PyObject* err = PyErr_Occurred();
         std::string str = "error calling IPython.core.getipython.get_ipython(): ";
         str += carbon::str(err);
@@ -172,6 +173,7 @@ CAPI_FUNC(PyObject*) CIPython_Get() {
     Py_DECREF(module);
     Py_DECREF(get_ipython);
     
+    Log(LOG_TRACE) << "succeeded, returning " << carbon::str(result);
     return result;
 }
     
@@ -182,7 +184,8 @@ CAPI_FUNC(bool) C_TerminalInteractiveShell() {
     if (ipy && strcmp("TerminalInteractiveShell", ipy->ob_type->tp_name) == 0) {
         result = true;
     }
-
+    
+    Log(LOG_TRACE) << "returning: " << result;
     Py_XDECREF(ipy);
     return result;
 }
@@ -190,11 +193,14 @@ CAPI_FUNC(bool) C_TerminalInteractiveShell() {
 CAPI_FUNC(bool) C_ZMQInteractiveShell() {
     PyObject* ipy = CIPython_Get();
     bool result = false;
+    
+    Log(LOG_TRACE) << "ipython: " << carbon::str(ipy);
 
     if (ipy && strcmp("ZMQInteractiveShell", ipy->ob_type->tp_name) == 0) {
         result = true;
     }
-
+    
+    Log(LOG_TRACE) << "returning: " << result;
     Py_XDECREF(ipy);
     return result;
 }
