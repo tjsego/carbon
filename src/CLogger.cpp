@@ -341,9 +341,8 @@ static PyObject *logger_log(PyObject *self, PyObject *args, PyObject *kwargs) {
 
 static PyObject *logger_set_level(PyObject *self, PyObject *args, PyObject *kwargs) {
     try {
-
         logLevel = carbon::arg<int>("level", 0, args, kwargs);
-
+        CLogger::setLevel(logLevel);
         Py_RETURN_NONE;
     }
     catch(const std::exception &e) {
@@ -599,50 +598,59 @@ HRESULT _CLogger_Init(PyObject* m) {
     return S_OK;
 }
 
+static void write_log(const char* kind, const std::string &fmt, const char* func, const char *file, const int line) {
+    
+    *os << kind << ": " << fmt;
+    if(func) { *os << ", func: " << func;}
+    if(file) {*os << ", file:" << file;}
+    if(line >= 0) {*os << ",lineno:" << line;}
+    *os << std::endl;
+}
+
 void FakeLogger::fatal(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "FATAL: " << fmt << ", func: " << func << ", file:" << file << ",lineno:" << line << std::endl;
+    write_log("FATAL", fmt, func, file, line);
 }
 
 void FakeLogger::critical(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "CRITICAL: " << fmt << ", func: " << func << ",file:" << file << ",lineno:" << line << std::endl;
+    write_log("CRITICAL", fmt, func, file, line);
 }
 
 void FakeLogger::error(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "ERROR: " << fmt << ", func: " << func  << ",file:" << file << ",lineno:" << line << std::endl;
+    write_log("ERROR", fmt, func, file, line);
 }
 
 void FakeLogger::warning(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "WARNING: " << fmt << ", func: " << func << ",file:" << file << ",lineno:" << line << std::endl;
+    write_log("WARNING", fmt, func, file, line);
 }
 
 void FakeLogger::notice(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "NOTICE: " << fmt << ", func: " << func << std::endl;
+    write_log("NOTICE", fmt, func, file, line);
 }
 
 void FakeLogger::information(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "INFO: " << fmt << ", func: " << func << std::endl;
+    write_log("INFO", fmt, func, file, line);
 }
 
 void FakeLogger::debug(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "DEBUG: " << fmt << ", func: " << func << std::endl;
+    write_log("DEBUG", fmt, func, file, line);
 }
 
 void FakeLogger::trace(const std::string &fmt, const char* func, const char *file,
         const int line)
 {
-    *os << "TRACE: " << fmt << ", func: " << func << std::endl;
+    write_log("TRACE", fmt, func, file, line);
 }
