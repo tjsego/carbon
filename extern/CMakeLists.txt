@@ -73,14 +73,6 @@ target_link_libraries(libsbml-static-interface INTERFACE ${LIBSBML_LIBRARY}-stat
 
 target_compile_definitions(libsbml-static-interface INTERFACE LIBSBML_STATIC)
 
-# libsbml writes configured headers here:
-# .//extern/carbon/extern/libSBML-5.18.0-Source/src/sbml/common/libsbml-config-common.h
-target_include_directories(libsbml-static-interface INTERFACE
-  ${CMAKE_CURRENT_BINARY_DIR}/libSBML-5.18.0-Source/src/)
-
-# lisbml source include files:
-# /Users/andy/src/radium/extern/carbon/extern/libSBML-5.18.0-Source/src/sbml
-target_include_directories(libsbml-static-interface INTERFACE
-  ${CMAKE_CURRENT_SOURCE_DIR}/libSBML-5.18.0-Source/src/)
+target_include_directories(libsbml-static-interface INTERFACE "$<TARGET_PROPERTY:${LIBSBML_LIBRARY}-static,INCLUDE_DIRECTORIES>")
 
 add_library(LibSBML::LibSBML ALIAS libsbml-static-interface)
